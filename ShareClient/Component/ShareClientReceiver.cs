@@ -5,24 +5,24 @@ using ShareClient.Model;
 
 namespace ShareClient.Component
 {
-    public class ShareClientReciver : IShareClientReciver
+    public class ShareClientReceiver : IShareClientReceiver
     {
         private readonly LinkedList<ISplitConnect> _SplitBuffer = new LinkedList<ISplitConnect>();
-        private readonly IReciveDataProvider _ReciveDataProvider;
+        private readonly IReceiveDataProvider _ReceiveDataProvider;
 
         public event EventHandler ShareClientClosed;
         public IClientSocket Socket { get; }
         public IClientManeger ClientManager { get; }
         public ClientStatus Status => Socket.Status;
 
-        public ShareClientReciver(IClientManeger clientManeger, IClientSocket socket, IReciveDataProvider provider)
+        public ShareClientReceiver(IClientManeger clientManeger, IClientSocket socket, IReceiveDataProvider provider)
         {
             ClientManager = clientManeger;
             Socket = socket;
-            _ReciveDataProvider = provider;
+            _ReceiveDataProvider = provider;
         }
 
-        public async Task ReciveAsync()
+        public async Task ReceiveAsync()
         {
             if (Status != ClientStatus.Open)
             {
@@ -34,7 +34,7 @@ namespace ShareClient.Component
             {
                 try
                 {
-                    await ReciveData();
+                    await ReceiveData();
                 }
                 catch (ShareClientException ex)
                 {
@@ -49,53 +49,53 @@ namespace ShareClient.Component
             }
         }
 
-        private async Task ReciveData()
+        private async Task ReceiveData()
         {
-            var reciveData = await Socket.ReciveAsync();
-            if (reciveData != null && reciveData.Length > 0)
+            var ReceiveData = await Socket.ReceiveAsync();
+            if (ReceiveData != null && ReceiveData.Length > 0)
             {
-                var clientData = ShareClientData.FromBytes(reciveData);
+                var clientData = ShareClientData.FromBytes(ReceiveData);
                 if (clientData != null)
                 {
                     ClientManager.SetDataSize(clientData.Size);
-                    AnalyzeReciveData(clientData);
+                    AnalyzeReceiveData(clientData);
                 }
             }
         }
 
-        private void AnalyzeReciveData(ShareClientData reciveData)
+        private void AnalyzeReceiveData(ShareClientData ReceiveData)
         {
-            if (reciveData.Header.DataType == SendDataType.Close)
+            if (ReceiveData.Header.DataType == SendDataType.Close)
             {
                 Close();
             }
-            else if (reciveData.Header.DataType == SendDataType.Application)
+            else if (ReceiveData.Header.DataType == SendDataType.Application)
             {
                 try
                 {
-                    if (reciveData.Header.SplitCount == 1)
+                    if (ReceiveData.Header.SplitCount == 1)
                     {
-                        AddReceiveData(reciveData.DataPart);
+                        AddReceiveData(ReceiveData.DataPart);
                     }
                     else
                     {
-                        ConnectReciveData(reciveData);
+                        ConnectReceiveData(ReceiveData);
                     }
                 }
                 catch (Exception ex)
                 {
-                    throw new ReceiveDataAnalyzeException(reciveData, "Analyze ReciveData Fail", ex);
+                    throw new ReceiveDataAnalyzeException(ReceiveData, "Analyze ReceiveData Fail", ex);
                 }
             }
         }
 
-        private void ConnectReciveData(ShareClientData reciveData)
+        private void ConnectReceiveData(ShareClientData ReceiveData)
         {
             var buffer = _SplitBuffer.First;
             while (buffer != null)
             {
                 var connect = buffer.Value;
-                if (connect.AddMember(reciveData))
+                if (connect.AddMember(ReceiveData))
                 {
                     if (connect.IsComplete)
                     {
@@ -107,7 +107,7 @@ namespace ShareClient.Component
                 buffer = buffer.Next;
             }
 
-            _SplitBuffer.AddLast(SplitConnectFactory.Create(reciveData));
+            _SplitBuffer.AddLast(SplitConnectFactory.Create(ReceiveData));
             if (_SplitBuffer.Count > ClientManager.ClientSpec.SplitBufferSize)
             {
                 _SplitBuffer.RemoveFirst();
@@ -116,9 +116,9 @@ namespace ShareClient.Component
 
         private void AddReceiveData(byte[] data)
         {
-           if( _ReciveDataProvider.CanReceive)
+           if( _ReceiveDataProvider.CanReceive)
             {
-                _ReciveDataProvider.Add(data);
+                _ReceiveDataProvider.Add(data);
             }
         }
 
