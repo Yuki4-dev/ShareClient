@@ -67,7 +67,7 @@ namespace ShareClientTest
 
         public bool CanReceive => true;
 
-        public void Add(byte[] data)
+        public void Receive(byte[] data)
         {
             Data = data;
         }

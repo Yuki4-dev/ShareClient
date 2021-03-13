@@ -118,7 +118,7 @@ namespace ShareClient.Component
         {
            if( _ReceiveDataProvider.CanReceive)
             {
-                _ReceiveDataProvider.Add(data);
+                _ReceiveDataProvider.Receive(data);
             }
         }
 
