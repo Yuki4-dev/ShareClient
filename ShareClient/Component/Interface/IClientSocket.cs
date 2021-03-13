@@ -8,6 +8,6 @@ namespace ShareClient.Component
     {
         public void Open(Connection Connection);
         public void Send(byte[] sendData);
-        public Task<byte[]> ReciveAsync();
+        public Task<byte[]> ReceiveAsync();
     }
 }

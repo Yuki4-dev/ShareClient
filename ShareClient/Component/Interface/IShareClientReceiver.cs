@@ -2,8 +2,8 @@
 
 namespace ShareClient.Component
 {
-    public interface IShareClientReciver : IShareClient
+    public interface IShareClientReceiver : IShareClient
     {
-        public Task ReciveAsync();
+        public Task ReceiveAsync();
     }
 }

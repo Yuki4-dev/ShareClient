@@ -12,7 +12,7 @@ namespace ShareClient.Component
 
         public ShareClientSocket() { }
 
-        public abstract Task<byte[]> ReciveAsync();
+        public abstract Task<byte[]> ReceiveAsync();
         public abstract void Send(byte[] sendData);
         public abstract void Open(Connection connection);
         public abstract ClientStatus Status { get; }

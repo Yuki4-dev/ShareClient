@@ -38,7 +38,7 @@ namespace ShareClientTest
             ImageBytes.Add(sendData);
         }
 
-        public async Task<byte[]> ReciveAsync()
+        public async Task<byte[]> ReceiveAsync()
         {
             if (ImageBytes.Count == 1)
             {
@@ -61,7 +61,7 @@ namespace ShareClientTest
         }
     }
 
-    internal class MockReciveImageProvider : IReciveDataProvider
+    internal class MockReceiveImageProvider : IReceiveDataProvider
     {
         public byte[] Data { get; private set; }
 

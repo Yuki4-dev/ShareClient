@@ -18,7 +18,7 @@ namespace ShareClientTest
             var img = new Bitmap("test1.png");
             var manager = new MockClientManager();
             var socket = new MockClientSocket();
-            var provider = new MockReciveImageProvider();
+            var provider = new MockReceiveImageProvider();
 
             using var ms = new MemoryStream();
             img.Save(ms, ImageFormat.Png);
@@ -27,8 +27,8 @@ namespace ShareClientTest
             var sender = new ShareClientSender(manager, socket);
             sender.Send(sendByte);
 
-            var reciver = new ShareClientReciver(manager, socket, provider);
-            var task = reciver.ReciveAsync();
+            var Receiver = new ShareClientReceiver(manager, socket, provider);
+            var task = Receiver.ReceiveAsync();
 
             while (!task.IsCompleted)
             {
