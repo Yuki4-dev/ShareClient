@@ -29,21 +29,21 @@ namespace ShareClient.Component
             Open();
         }
 
-        public async Task<byte[]> ReciveAsync()
+        public async Task<byte[]> ReceiveAsync()
         {
             CheckOpenAndThrow();
-            return await Task.Factory.StartNew(Recive);
+            return await Task.Factory.StartNew(Receive);
         }
 
-        private byte[] Recive()
+        private byte[] Receive()
         {
             try
             {
-                IPEndPoint reciveEp = null;
-                var reciveData = udpClient.Receive(ref reciveEp);
-                if (connection.RemoteEndPoint.Address.Equals(reciveEp.Address))
+                IPEndPoint receiveEp = null;
+                var receiveData = udpClient.Receive(ref receiveEp);
+                if (connection.RemoteEndPoint.Address.Equals(receiveEp.Address))
                 {
-                    return reciveData;
+                    return receiveData;
                 }
             }
             catch (Exception ex)
@@ -54,7 +54,7 @@ namespace ShareClient.Component
                 }
                 else
                 {
-                    throw new ShareClientSocketException("Recive Failure : " + ex.Message, ex);
+                    throw new ShareClientSocketException("Receive Failure : " + ex.Message, ex);
                 }
             }
 

@@ -54,8 +54,8 @@ namespace ShareClient.Component
         {
             _Client.Send(connectData.ToByte(), connectData.Size);
 
-            IPEndPoint ReceiveEp = null;
-            var ReceiveData = _Client.Receive(ref ReceiveEp);
+            IPEndPoint receiveEp = null;
+            var ReceiveData = _Client.Receive(ref receiveEp);
             var imageData = ShareClientData.FromBytes(ReceiveData);
             if (imageData == null || imageData.Header.DataType != SendDataType.Connect)
             {
@@ -84,7 +84,7 @@ namespace ShareClient.Component
 
         public async Task<Connection> AcceptAsync(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, bool> acceptCallback)
         {
-            return await AcceptAsync(endPoint, (ReceiveEp, connectionData) => new ConnectionResponse(acceptCallback(ReceiveEp, connectionData), connectionData));
+            return await AcceptAsync(endPoint, (receiveEp, connectionData) => new ConnectionResponse(acceptCallback(receiveEp, connectionData), connectionData));
         }
 
         public async Task<Connection> AcceptAsync(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, ConnectionResponse> acceptCallback)
@@ -120,9 +120,9 @@ namespace ShareClient.Component
 
         private Connection AcceptWork(Func<IPEndPoint, ConnectionData, ConnectionResponse> acceptCallback)
         {
-            IPEndPoint ReceiveEp = null;
-            var ReceiveData = _Client.Receive(ref ReceiveEp);
-            var imageData = ShareClientData.FromBytes(ReceiveData);
+            IPEndPoint receiveEp = null;
+            var receiveData = _Client.Receive(ref receiveEp);
+            var imageData = ShareClientData.FromBytes(receiveData);
             if (imageData == null || imageData.Header.DataType != SendDataType.Connect)
             {
                 return null;
@@ -134,13 +134,13 @@ namespace ShareClient.Component
                 return null;
             }
 
-            var response = acceptCallback.Invoke(ReceiveEp, connectionData);
+            var response = acceptCallback.Invoke(receiveEp, connectionData);
             var clientData = GetResponseData(response);
-            _Client.Send(clientData.ToByte(), clientData.Size, ReceiveEp);
+            _Client.Send(clientData.ToByte(), clientData.Size, receiveEp);
             if (response.IsConnect)
             {
                 Open();
-                return new Connection(response.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, ReceiveEp);
+                return new Connection(response.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, receiveEp);
             }
 
             return null;
