@@ -42,7 +42,7 @@ namespace ShareClient.Component
             }
             finally
             {
-                _Client.Dispose();
+                _Client?.Dispose();
                 if (Status == ClientStatus.Connect)
                 {
                     init();
@@ -110,7 +110,7 @@ namespace ShareClient.Component
             }
             finally
             {
-                _Client.Dispose();
+                _Client?.Dispose();
                 if (Status == ClientStatus.Connect)
                 {
                     init();
