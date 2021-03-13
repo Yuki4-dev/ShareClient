@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 
 namespace ShareClient.Component
 {
-    public abstract class SahreClientSocket : IClientSocket
+    public abstract class ShareClientSocket : IClientSocket
     {
         public static IClientSocket CreateUdpSocket()
         {
             return new UdpClientSocket();
         }
 
-        public SahreClientSocket() { }
+        public ShareClientSocket() { }
 
         public abstract Task<byte[]> ReciveAsync();
         public abstract void Send(byte[] sendData);
