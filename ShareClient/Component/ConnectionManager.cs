@@ -13,24 +13,19 @@ namespace ShareClient.Component
 
         public ConnectionManager() { }
 
-        public async Task<Connection> ConnectAsync(IPEndPoint endPoint, ShareClientSpec clientSpec)
-        {
-            return await ConnectAsync(endPoint, clientSpec, new byte[0]);
-        }
-
-        public async Task<Connection> ConnectAsync(IPEndPoint endPoint, ShareClientSpec clientSpec, byte[] meta)
+        public async Task<Connection> ConnectAsync(IPEndPoint endPoint, ConnectionData connectionData)
         {
             Connect();
-            return await Connect(endPoint, clientSpec, meta);
+            return await Connect(endPoint, connectionData);
         }
 
-        private async Task<Connection> Connect(IPEndPoint endPoint, ShareClientSpec clientSpec, byte[] meta)
+        private async Task<Connection> Connect(IPEndPoint endPoint, ConnectionData connectionData)
         {
             try
             {
                 _Client = new UdpClient();
                 _Client.Connect(endPoint);
-                return await WaitResponse(() => ConnectWork(GetConnectData(clientSpec, meta)));
+                return await WaitResponse(() => ConnectWork(GetClientData(connectionData)));
             }
             catch (Exception ex)
             {
@@ -75,11 +70,10 @@ namespace ShareClient.Component
             }
         }
 
-        private ShareClientData GetConnectData(ShareClientSpec clientSpec, byte[] meta)
+        private ShareClientData GetClientData(ConnectionData connectionData)
         {
-            var connectData = new ConnectionData(clientSpec, meta);
-            var header = ShareClientHeader.Connect((uint)connectData.Size);
-            return new ShareClientData(header, connectData.ToByte());
+            var header = ShareClientHeader.Connect((uint)connectionData.Size);
+            return new ShareClientData(header, connectionData.ToByte());
         }
 
         public async Task<Connection> AcceptAsync(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, bool> acceptCallback)

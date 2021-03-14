@@ -103,7 +103,7 @@ namespace SharedDisplayForm
             int size = 0;
             try
             {
-                 size = _Sender.ClientManager.DataSize.Sum();
+                size = _Sender.ClientManager.DataSize.Sum();
             }
             catch
             {
@@ -151,7 +151,7 @@ namespace SharedDisplayForm
                 var iPEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
                 var spec = new ShareClientSpec();
 
-                connection = await _ClientConnection.ConnectAsync(iPEndPoint, spec, GetMeta());
+                connection = await _ClientConnection.ConnectAsync(iPEndPoint, new ConnectionData(spec, GetMeta()));
             }
             catch (Exception ex)
             {
