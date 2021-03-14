@@ -81,8 +81,14 @@ namespace SharedDisplayForm
             {
                 return;
             }
-
-            SetSpeed(_Receiver.ClientManager.DataSize.Sum(), _ReciveParam);
+            try
+            {
+                var sizes = _Receiver.ClientManager.DataSize.ToArray();
+            }
+            catch
+            {
+            }
+            SetSpeed(sizes.Sum(), _ReciveParam);
             _Receiver.ClientManager.DataSizeClear();
         }
 
@@ -93,7 +99,14 @@ namespace SharedDisplayForm
                 return;
             }
 
-            SetSpeed(this._Sender.ClientManager.DataSize.Sum(), _SendParam);
+            try
+            {
+                var sizes = _Sender.ClientManager.DataSize.ToArray();
+            }
+            catch
+            {
+            }
+            SetSpeed(sizes.Sum(), _SendParam);
             this._Sender.ClientManager.DataSizeClear();
         }
 
@@ -237,7 +250,8 @@ namespace SharedDisplayForm
 
         private ConnectionResponse AcceptCallback(IPEndPoint iPEndPoint, ConnectionData connection)
         {
-            return (ConnectionResponse)Invoke(new DelegateConnect(() => {
+            return (ConnectionResponse)Invoke(new DelegateConnect(() =>
+            {
                 bool result = false;
                 var c = new ConnectForm(iPEndPoint, connection);
                 c.ConnectCallback = () => result = true;
@@ -251,7 +265,8 @@ namespace SharedDisplayForm
         {
             await _Semaphore.WaitAsync();
 
-            var l = new Label() {
+            var l = new Label()
+            {
                 Width = 300,
                 Height = 100,
                 Text = msg,
