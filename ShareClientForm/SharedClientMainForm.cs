@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -15,6 +16,7 @@ namespace SharedDisplayForm
 {
     public partial class SharedClientMainForm : Form
     {
+        private readonly ImageFormat[] Formats = new ImageFormat[] { ImageFormat.Jpeg, ImageFormat.Png, ImageFormat.Gif };
         private readonly SemaphoreSlim _Semaphore = new SemaphoreSlim(1);
         private readonly SettingForm _SettingForm = new SettingForm();
         private readonly IConnectionManager _ClientConnection = new ConnectionManager();
@@ -35,7 +37,8 @@ namespace SharedDisplayForm
             SettingBtn.DropVisual = b => b.BackColor = Color.LightGray;
             SettingBtn.CloseVisual = b => b.BackColor = BackColor;
 
-            //ImageCmb.SelectedIndex = 2;
+            ImageCmb.Items.AddRange(Formats);
+            ImageCmb.SelectedIndex = 0;
 
             ClientHostTextBox.Text = "127.0.0.1";
             ClientPortTextBox.Text = "2002";
@@ -146,6 +149,7 @@ namespace SharedDisplayForm
                 {
                     PushMessage("接続しました。");
                     _Sender = new DisplayImageSender(connection, new DisplayImageCaputure(hWnd, _SettingForm.WindowWidth), _SettingForm.FlameLate);
+                    _Sender.Format = (ImageFormat)ImageCmb.SelectedItem;
                     _Sender.Sender.ShareClientClosed += (_, __) => PushMessage("切断しました。");
                     _Sender.Start();
                 }

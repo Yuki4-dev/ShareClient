@@ -11,6 +11,7 @@ namespace SharedClientForm.Component
         private readonly DisplayImageCaputure _Caputure;
         private readonly System.Timers.Timer _SenderTimer = new System.Timers.Timer();
 
+        public ImageFormat Format { get; set; } = ImageFormat.Jpeg;
         public IShareClientSender Sender { get; }
         public ShareClientManager ClientManager { get; }
 
@@ -35,7 +36,7 @@ namespace SharedClientForm.Component
                 try
                 {
                     using var ms = new MemoryStream();
-                    sendImage.Save(ms, ImageFormat.Jpeg);
+                    sendImage.Save(ms, Format);
                     Sender.Send(ms.GetBuffer());
                 }
                 catch (Exception ex)
