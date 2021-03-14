@@ -81,14 +81,15 @@ namespace SharedDisplayForm
             {
                 return;
             }
+            int size = 0;
             try
             {
-                var sizes = _Receiver.ClientManager.DataSize.ToArray();
+                size = _Receiver.ClientManager.DataSize.Sum();
             }
             catch
             {
             }
-            SetSpeed(sizes.Sum(), _ReciveParam);
+            SetSpeed(size, _ReciveParam);
             _Receiver.ClientManager.DataSizeClear();
         }
 
@@ -99,14 +100,15 @@ namespace SharedDisplayForm
                 return;
             }
 
+            int size = 0;
             try
             {
-                var sizes = _Sender.ClientManager.DataSize.ToArray();
+                 size = _Sender.ClientManager.DataSize.Sum();
             }
             catch
             {
             }
-            SetSpeed(sizes.Sum(), _SendParam);
+            SetSpeed(size, _SendParam);
             this._Sender.ClientManager.DataSizeClear();
         }
 
