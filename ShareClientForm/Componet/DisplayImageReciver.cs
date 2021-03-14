@@ -6,8 +6,8 @@ namespace SharedClientForm.Component
 {
     public class DisplayImageReciver : IDisposable
     {
-        private readonly System.Timers.Timer reciverTimer = new System.Timers.Timer();
-        private readonly ReciveImageProvider reciveImageProvider = new ReciveImageProvider();
+        private readonly System.Timers.Timer _ReciverTimer = new System.Timers.Timer();
+        private readonly ReciveImageProvider _ReciveImageProvider = new ReciveImageProvider();
 
         public ShareClientManager ClientManager { get; }
         public ShareClientReceiver Reciver { get; }
@@ -19,16 +19,16 @@ namespace SharedClientForm.Component
 
             var socket = ShareClientSocket.CreateUdpSocket();
             socket.Open(connection);
-            Reciver = new ShareClientReceiver(ClientManager, socket, reciveImageProvider);
+            Reciver = new ShareClientReceiver(ClientManager, socket, _ReciveImageProvider);
 
             Area = area;
-            reciverTimer.Interval = interval;
-            reciverTimer.Elapsed += PaintPicture;
+            _ReciverTimer.Interval = interval;
+            _ReciverTimer.Elapsed += PaintPicture;
         }
 
         private void PaintPicture(object sender, EventArgs e)
         {
-            var bmp = reciveImageProvider.GetImage();
+            var bmp = _ReciveImageProvider.GetImage();
             if (bmp != null)
             {
                 Area.PaintPicture(bmp);
@@ -38,14 +38,14 @@ namespace SharedClientForm.Component
         public void Start()
         {
             Reciver.ReceiveAsync();
-            reciverTimer.Start();
+            _ReciverTimer.Start();
         }
 
         public void Dispose()
         {
-            reciverTimer.Dispose();
+            _ReciverTimer.Dispose();
             Reciver.Dispose();
-            reciveImageProvider.Dispose();
+            _ReciveImageProvider.Dispose();
         }
     }
 }

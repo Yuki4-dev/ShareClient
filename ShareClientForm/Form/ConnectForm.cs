@@ -10,7 +10,7 @@ namespace SharedClientForm
     public partial class ConnectForm : Form
     {
 
-        public Action ConnectCallBack { get; set; }
+        public Action ConnectCallback { get; set; }
 
         public ConnectForm(IPEndPoint iPEndPoint, ConnectionData connection)
         {
@@ -33,7 +33,7 @@ namespace SharedClientForm
         private void buttonConnect_Click(object sender, EventArgs e)
         {
             Close();
-            ConnectCallBack?.Invoke();
+            ConnectCallback?.Invoke();
         }
 
         private void buttoonCancel_Click(object sender, EventArgs e)

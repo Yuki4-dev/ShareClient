@@ -6,25 +6,25 @@ namespace SharedClientForm.Component
 {
     public class DisplayImageCaputure
     {
-        private readonly IntPtr windowHandle;
-        private readonly int windowWidth;
-        private readonly InterpolationMode interpolationMode;
+        private readonly IntPtr _WindowHandle;
+        private readonly int _WindowWidth;
+        private readonly InterpolationMode _Mode;
 
         public DisplayImageCaputure(IntPtr hWnd, int width, InterpolationMode mode = InterpolationMode.Default)
         {
-            windowHandle = hWnd;
-            windowWidth = width;
-            interpolationMode = mode;
+            _WindowHandle = hWnd;
+            _WindowWidth = width;
+            _Mode = mode;
         }
 
         public bool TryGetWindowImage(out Image sendImage)
         {
 
-            if (BmpHelper.TryGetWindow(windowHandle, out Bitmap windowBmp))
+            if (BmpHelper.TryGetWindow(_WindowHandle, out Bitmap windowBmp))
             {
-                if(windowWidth > 0)
+                if(_WindowWidth > 0)
                 {
-                    sendImage = BmpHelper.ResizeBmp(windowBmp, windowWidth, interpolationMode);
+                    sendImage = BmpHelper.ResizeBmp(windowBmp, _WindowWidth, _Mode);
                 }
                 else
                 {

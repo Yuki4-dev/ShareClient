@@ -8,8 +8,8 @@ namespace SharedClientForm.Component
 {
     public class DisplayImageSender : IDisposable
     {
-        private readonly DisplayImageCaputure displayImageCaputure;
-        private readonly System.Timers.Timer senderTimer = new System.Timers.Timer();
+        private readonly DisplayImageCaputure _Caputure;
+        private readonly System.Timers.Timer _SenderTimer = new System.Timers.Timer();
 
         public IShareClientSender Sender { get; }
         public ShareClientManager ClientManager { get; }
@@ -22,16 +22,16 @@ namespace SharedClientForm.Component
             socket.Open(connection);
             Sender = new ShareClientSender(ClientManager, socket);
 
-            displayImageCaputure = caputure;
-            senderTimer.Interval = interval;
-            senderTimer.Elapsed += Send;
+            _Caputure = caputure;
+            _SenderTimer.Interval = interval;
+            _SenderTimer.Elapsed += Send;
         }
 
         private void Send(object sender, EventArgs e)
         {
-            if (displayImageCaputure.TryGetWindowImage(out var sendImage))
+            if (_Caputure.TryGetWindowImage(out var sendImage))
             {
-                senderTimer.Stop();
+                _SenderTimer.Stop();
                 try
                 {
                     using var ms = new MemoryStream();
@@ -45,19 +45,19 @@ namespace SharedClientForm.Component
                 finally
                 {
                     sendImage.Dispose();
-                    senderTimer.Start();
+                    _SenderTimer.Start();
                 }
             }
         }
 
         public void Start()
         {
-            senderTimer.Start();
+            _SenderTimer.Start();
         }
 
         public void Dispose()
         {
-            senderTimer.Dispose();
+            _SenderTimer.Dispose();
             Sender.Dispose();
         }
     }
