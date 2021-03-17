@@ -33,7 +33,7 @@ namespace ShareClient.Component
             }
         }
 
-        private  void DataAdd(int size)
+        private void DataAdd(int size)
         {
             semaphore.Wait();
             _DataSize.Add(size);

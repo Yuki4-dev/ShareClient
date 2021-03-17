@@ -8,10 +8,10 @@ namespace ShareClient.Component
     public class ShareClientSender : IShareClientSender
     {
         private int atomicCode = 0;
-        private bool stopSendImage = false;
+        private bool stopSendData = false;
         private byte[] oldHash = new byte[0];
-        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
-        private readonly HashAlgorithm hashAlgorithm = new MD5CryptoServiceProvider();
+        private readonly SemaphoreSlim _Semaphore = new SemaphoreSlim(1);
+        private readonly HashAlgorithm _HashAlgorithm = new MD5CryptoServiceProvider();
 
         public event EventHandler ShareClientClosed;
         public IClientSocket Socket { get; }
@@ -33,7 +33,7 @@ namespace ShareClient.Component
 
             if (!ClientManager.ClientSpec.SendSameData)
             {
-                var hash = hashAlgorithm.ComputeHash(data);
+                var hash = _HashAlgorithm.ComputeHash(data);
                 if (EqualsHash(hash, oldHash))
                 {
                     return;
@@ -68,7 +68,7 @@ namespace ShareClient.Component
 
         private void SendData(uint atomicCode, byte[] srcData, int sendLength, int sendIndex, int splitLength, int splitIndex)
         {
-            if (stopSendImage)
+            if (stopSendData)
             {
                 return;
             }
@@ -132,10 +132,10 @@ namespace ShareClient.Component
 
         private uint GetAtomicCodeAndIncrement(int splitCount)
         {
-            semaphore.Wait();
+            _Semaphore.Wait();
             var at = atomicCode;
             atomicCode += splitCount;
-            semaphore.Release();
+            _Semaphore.Release();
             return (uint)at;
         }
 
@@ -153,7 +153,7 @@ namespace ShareClient.Component
 
             try
             {
-                stopSendImage = true;
+                stopSendData = true;
                 SendData(new ShareClientData(ShareClientHeader.Close()));
             }
             catch

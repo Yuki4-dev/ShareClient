@@ -22,7 +22,7 @@ namespace SharedClientForm
 
             foreach (Process p in Process.GetProcesses())
             {
-                if(p.MainWindowTitle.Length != 0)
+                if (p.MainWindowTitle.Length != 0)
                 {
                     windwAdd(p.MainWindowTitle, p.MainWindowHandle);
                 }
@@ -45,12 +45,10 @@ namespace SharedClientForm
         {
             var title = WindowTextList.SelectedItem as string;
             var hWnd = windows[title];
-            if (!BmpHelper.TryGetWindow(hWnd, out Bitmap windowBmp))
+            if (BmpHelper.TryGetWindow(hWnd, out Bitmap windowBmp))
             {
-                return;
+                DisplayArea.PaintPicture(windowBmp);
             }
-
-            DisplayArea.PaintPicture(windowBmp);
         }
 
         private void WindowTextList_DoubleClick(object sender, System.EventArgs e)

@@ -22,7 +22,7 @@ namespace SharedClientForm.Component
 
             if (BmpHelper.TryGetWindow(_WindowHandle, out Bitmap windowBmp))
             {
-                if(_WindowWidth > 0)
+                if (_WindowWidth > 0)
                 {
                     sendImage = BmpHelper.ResizeBmp(windowBmp, _WindowWidth, _Mode);
                 }

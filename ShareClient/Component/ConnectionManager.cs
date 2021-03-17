@@ -51,13 +51,13 @@ namespace ShareClient.Component
 
             IPEndPoint receiveEp = null;
             var ReceiveData = _Client.Receive(ref receiveEp);
-            var imageData = ShareClientData.FromBytes(ReceiveData);
-            if (imageData == null || imageData.Header.DataType != SendDataType.Connect)
+            var cleintData = ShareClientData.FromBytes(ReceiveData);
+            if (cleintData == null || cleintData.Header.DataType != SendDataType.Connect)
             {
                 return null;
             }
 
-            var response = ConnectionResponse.FromByte(imageData.DataPart);
+            var response = ConnectionResponse.FromByte(cleintData.DataPart);
             if (response != null && response.IsConnect)
             {
                 Open();
@@ -116,25 +116,25 @@ namespace ShareClient.Component
         {
             IPEndPoint receiveEp = null;
             var receiveData = _Client.Receive(ref receiveEp);
-            var imageData = ShareClientData.FromBytes(receiveData);
-            if (imageData == null || imageData.Header.DataType != SendDataType.Connect)
+            var clientData = ShareClientData.FromBytes(receiveData);
+            if (clientData == null || clientData.Header.DataType != SendDataType.Connect)
             {
                 return null;
             }
 
-            var connectionData = ConnectionData.FromByte(imageData.DataPart);
+            var connectionData = ConnectionData.FromByte(clientData.DataPart);
             if (connectionData == null)
             {
                 return null;
             }
 
-            var response = acceptCallback.Invoke(receiveEp, connectionData);
-            var clientData = GetResponseData(response);
-            _Client.Send(clientData.ToByte(), clientData.Size, receiveEp);
-            if (response.IsConnect)
+            var result = acceptCallback.Invoke(receiveEp, connectionData);
+            var responseData = GetResponseData(result);
+            _Client.Send(responseData.ToByte(), responseData.Size, receiveEp);
+            if (result.IsConnect)
             {
                 Open();
-                return new Connection(response.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, receiveEp);
+                return new Connection(result.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, receiveEp);
             }
 
             return null;

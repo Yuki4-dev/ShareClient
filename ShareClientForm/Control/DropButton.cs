@@ -12,7 +12,8 @@ namespace SharedClientForm
         public Action<DropButton> DropVisual { get; set; } = b => b.Text = "▼";
 
         private bool _IsDrop = false;
-        public bool IsDrop {
+        public bool IsDrop
+        {
             get => _IsDrop;
             set => SetIsDrop(value);
         }

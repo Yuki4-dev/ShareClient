@@ -15,6 +15,10 @@ namespace SharedClientForm
         public ConnectForm(IPEndPoint iPEndPoint, ConnectionData connection)
         {
             InitializeComponent();
+            if (connection.MetaData.Length == 0)
+            {
+                return;
+            }
 
             var meta = connection.MetaData.AsSpan();
             var name = meta[0..^8].ToArray();

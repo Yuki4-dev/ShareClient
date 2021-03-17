@@ -9,7 +9,7 @@ namespace ShareClient.Model
         public ShareClientSpec CleintSpec { get; }
         public byte[] MetaData { get; }
 
-        public ConnectionData(ShareClientSpec spec):this(spec, new byte[0])
+        public ConnectionData(ShareClientSpec spec) : this(spec, new byte[0])
         {
         }
 

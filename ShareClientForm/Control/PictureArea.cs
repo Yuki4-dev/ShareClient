@@ -7,8 +7,6 @@ namespace SharedClientForm
     {
         protected readonly PictureBox _MainPicture = new PictureBox();
 
-        public virtual bool IsPainting => true;
-
         public Image DefaultPicture { get; set; }
 
         private delegate void DelegateSetImage();
