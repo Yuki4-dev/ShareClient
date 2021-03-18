@@ -63,39 +63,39 @@ namespace ShareClient.Component
             }
         }
 
-        private void AnalyzeReceiveData(ShareClientData ReceiveData)
+        private void AnalyzeReceiveData(ShareClientData receiveData)
         {
-            if (ReceiveData.Header.DataType == SendDataType.Close)
+            if (receiveData.Header.DataType == SendDataType.Close)
             {
                 Close();
             }
-            else if (ReceiveData.Header.DataType == SendDataType.Application)
+            else if (receiveData.Header.DataType == SendDataType.Application)
             {
                 try
                 {
-                    if (ReceiveData.Header.SplitCount == 1)
+                    if (receiveData.Header.SplitCount == 1)
                     {
-                        AddReceiveData(ReceiveData.DataPart);
+                        AddReceiveData(receiveData.DataPart);
                     }
                     else
                     {
-                        ConnectReceiveData(ReceiveData);
+                        ConnectReceiveData(receiveData);
                     }
                 }
                 catch (Exception ex)
                 {
-                    throw new ReceiveDataAnalyzeException(ReceiveData, "Analyze ReceiveData Fail", ex);
+                    throw new ReceiveDataAnalyzeException(receiveData, "Analyze ReceiveData Fail", ex);
                 }
             }
         }
 
-        private void ConnectReceiveData(ShareClientData ReceiveData)
+        private void ConnectReceiveData(ShareClientData receiveData)
         {
             var buffer = _SplitBuffer.First;
             while (buffer != null)
             {
                 var connect = buffer.Value;
-                if (connect.AddMember(ReceiveData))
+                if (connect.AddMember(receiveData))
                 {
                     if (connect.IsComplete)
                     {
@@ -107,7 +107,7 @@ namespace ShareClient.Component
                 buffer = buffer.Next;
             }
 
-            _SplitBuffer.AddLast(SplitConnectFactory.Create(ReceiveData));
+            _SplitBuffer.AddLast(SplitConnectFactory.Create(receiveData));
             if (_SplitBuffer.Count > ClientManager.ClientSpec.SplitBufferSize)
             {
                 _SplitBuffer.RemoveFirst();
