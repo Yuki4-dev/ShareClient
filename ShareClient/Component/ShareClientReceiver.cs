@@ -91,20 +91,18 @@ namespace ShareClient.Component
 
         private void ConnectReceiveData(ShareClientData receiveData)
         {
-            var buffer = _SplitBuffer.First;
-            while (buffer != null)
+
+            foreach (var connect in _SplitBuffer)
             {
-                var connect = buffer.Value;
                 if (connect.AddMember(receiveData))
                 {
                     if (connect.IsComplete)
                     {
                         AddReceiveData(connect.GetConnectData());
-                        _SplitBuffer.Remove(buffer);
+                        _SplitBuffer.Remove(connect);
                     }
                     return;
                 }
-                buffer = buffer.Next;
             }
 
             _SplitBuffer.AddLast(SplitConnectFactory.Create(receiveData));
