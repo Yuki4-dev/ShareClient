@@ -13,7 +13,7 @@ namespace ShareClient.Model
         public SendDataType DataType { get; }
         public uint DataPartSize { get; }
 
-        public ShareClientHeader(uint atomicCode, byte splitCount, byte splitIndex, SendDataType dataType, uint dataSize)
+        private ShareClientHeader(uint atomicCode, byte splitCount, byte splitIndex, SendDataType dataType, uint dataSize)
         {
             AtomicCode = atomicCode;
             SplitCount = splitCount;
@@ -22,12 +22,17 @@ namespace ShareClient.Model
             DataPartSize = dataSize;
         }
 
-        public static ShareClientHeader SystemHeader(uint dataPartLength)
+        public static ShareClientHeader CreateApplication(uint atomicCode, byte splitCount, byte splitIndex, uint dataSize)
+        {
+            return new ShareClientHeader(atomicCode, splitCount, splitIndex, SendDataType.Application, dataSize);
+        }
+
+        public static ShareClientHeader CreateSystem(uint dataPartLength)
         {
             return new ShareClientHeader(0, 0, 0, SendDataType.System, dataPartLength);
         }
 
-        public static ShareClientHeader CloseHeader()
+        public static ShareClientHeader CreateClose()
         {
             return new ShareClientHeader(0, 0, 0, SendDataType.Close, 0);
         }

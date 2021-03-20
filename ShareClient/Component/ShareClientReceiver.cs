@@ -73,7 +73,10 @@ namespace ShareClient.Component
             }
             else if (receiveData.Header.DataType == SendDataType.System)
             {
-                SystemDataRecieved?.Invoke(this, new SystemDataRecieveEventArgs(receiveData.DataPart));
+                Task.Factory.StartNew(() =>
+                {
+                    SystemDataRecieved?.Invoke(this, new SystemDataRecieveEventArgs(receiveData.DataPart));
+                });
             }
             else
             {

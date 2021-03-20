@@ -1,5 +1,4 @@
 ﻿using ShareClient.Model;
-using System;
 
 namespace ShareClient.Component
 {

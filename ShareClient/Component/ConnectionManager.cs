@@ -72,7 +72,7 @@ namespace ShareClient.Component
 
         private ShareClientData GetClientData(ConnectionData connectionData)
         {
-            var header = ShareClientHeader.SystemHeader((uint)connectionData.Size);
+            var header = ShareClientHeader.CreateSystem((uint)connectionData.Size);
             return new ShareClientData(header, connectionData.ToByte());
         }
 
@@ -142,7 +142,7 @@ namespace ShareClient.Component
 
         private ShareClientData GetResponseData(ConnectionResponse response)
         {
-            var header = ShareClientHeader.SystemHeader((uint)response.Size);
+            var header = ShareClientHeader.CreateSystem((uint)response.Size);
             return new ShareClientData(header, response.ToByte());
         }
 

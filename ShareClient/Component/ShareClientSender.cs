@@ -76,10 +76,9 @@ namespace ShareClient.Component
             var sendData = new byte[sendLength];
             Array.Copy(srcData, sendIndex, sendData, 0, sendData.Length);
 
-            var header = new ShareClientHeader(atomicCode,
+            var header = ShareClientHeader.CreateApplication(atomicCode,
                 (byte)splitLength,
                 (byte)splitIndex,
-                SendDataType.Application,
                 (uint)sendData.Length);
 
             SendData(new ShareClientData(header, sendData));
@@ -154,7 +153,7 @@ namespace ShareClient.Component
             try
             {
                 stopSendData = true;
-                SendData(new ShareClientData(ShareClientHeader.CloseHeader()));
+                SendData(new ShareClientData(ShareClientHeader.CreateClose()));
             }
             catch
             {
