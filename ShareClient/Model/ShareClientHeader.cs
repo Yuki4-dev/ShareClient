@@ -22,12 +22,12 @@ namespace ShareClient.Model
             DataPartSize = dataSize;
         }
 
-        public static ShareClientHeader Connect(uint dataPartLength)
+        public static ShareClientHeader SystemHeader(uint dataPartLength)
         {
-            return new ShareClientHeader(0, 0, 0, SendDataType.Connect, dataPartLength);
+            return new ShareClientHeader(0, 0, 0, SendDataType.System, dataPartLength);
         }
 
-        public static ShareClientHeader Close()
+        public static ShareClientHeader CloseHeader()
         {
             return new ShareClientHeader(0, 0, 0, SendDataType.Close, 0);
         }
@@ -102,7 +102,7 @@ namespace ShareClient.Model
 
     public enum SendDataType
     {
-        Connect, Close, Application
+        System, Close, Application
     }
 
 }

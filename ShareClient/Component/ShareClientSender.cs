@@ -154,7 +154,7 @@ namespace ShareClient.Component
             try
             {
                 stopSendData = true;
-                SendData(new ShareClientData(ShareClientHeader.Close()));
+                SendData(new ShareClientData(ShareClientHeader.CloseHeader()));
             }
             catch
             {

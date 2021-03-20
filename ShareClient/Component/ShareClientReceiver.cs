@@ -11,6 +11,8 @@ namespace ShareClient.Component
         private readonly IReceiveDataProvider _ReceiveDataProvider;
 
         public event EventHandler ShareClientClosed;
+        public event EventHandler<SystemDataRecieveEventArgs> SystemDataRecieved;
+
         public IClientSocket Socket { get; }
         public IClientManeger ClientManager { get; }
         public ClientStatus Status => Socket.Status;
@@ -69,7 +71,11 @@ namespace ShareClient.Component
             {
                 Close();
             }
-            else if (receiveData.Header.DataType == SendDataType.Application)
+            else if (receiveData.Header.DataType == SendDataType.System)
+            {
+                SystemDataRecieved?.Invoke(this, new SystemDataRecieveEventArgs(receiveData.DataPart));
+            }
+            else
             {
                 try
                 {

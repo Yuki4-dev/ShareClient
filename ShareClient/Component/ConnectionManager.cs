@@ -52,7 +52,7 @@ namespace ShareClient.Component
             IPEndPoint receiveEp = null;
             var ReceiveData = _Client.Receive(ref receiveEp);
             var cleintData = ShareClientData.FromBytes(ReceiveData);
-            if (cleintData == null || cleintData.Header.DataType != SendDataType.Connect)
+            if (cleintData == null || cleintData.Header.DataType != SendDataType.System)
             {
                 return null;
             }
@@ -72,7 +72,7 @@ namespace ShareClient.Component
 
         private ShareClientData GetClientData(ConnectionData connectionData)
         {
-            var header = ShareClientHeader.Connect((uint)connectionData.Size);
+            var header = ShareClientHeader.SystemHeader((uint)connectionData.Size);
             return new ShareClientData(header, connectionData.ToByte());
         }
 
@@ -117,7 +117,7 @@ namespace ShareClient.Component
             IPEndPoint receiveEp = null;
             var receiveData = _Client.Receive(ref receiveEp);
             var clientData = ShareClientData.FromBytes(receiveData);
-            if (clientData == null || clientData.Header.DataType != SendDataType.Connect)
+            if (clientData == null || clientData.Header.DataType != SendDataType.System)
             {
                 return null;
             }
@@ -142,7 +142,7 @@ namespace ShareClient.Component
 
         private ShareClientData GetResponseData(ConnectionResponse response)
         {
-            var header = ShareClientHeader.Connect((uint)response.Size);
+            var header = ShareClientHeader.SystemHeader((uint)response.Size);
             return new ShareClientData(header, response.ToByte());
         }
 

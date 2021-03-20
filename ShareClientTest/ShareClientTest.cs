@@ -53,7 +53,7 @@ namespace ShareClientTest
         public void TestMethod1()
         {
             uint dataSize = 7777;
-            var header = new ShareClientHeader(1, 200, 0, SendDataType.Connect, dataSize);
+            var header = new ShareClientHeader(1, 200, 0, SendDataType.System, dataSize);
             var dataPart = new byte[dataSize];
             Array.Fill(dataPart, (byte)1);
 
