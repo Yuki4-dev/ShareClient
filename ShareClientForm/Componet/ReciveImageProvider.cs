@@ -9,8 +9,6 @@ namespace SharedClientForm.Component
     {
         public int Capacity { get; set; } = 100;
 
-        public bool CanReceive => true;
-
         private readonly ConcurrentQueue<Image> imgQueue = new ConcurrentQueue<Image>();
 
         public ReciveImageProvider() { }

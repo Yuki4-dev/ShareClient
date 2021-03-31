@@ -123,10 +123,7 @@ namespace ShareClient.Component
 
         private void AddReceiveData(byte[] data)
         {
-            if (_ReceiveDataProvider.CanReceive)
-            {
-                _ReceiveDataProvider.Receive(data);
-            }
+            _ReceiveDataProvider.Receive(data);
         }
 
         public void Dispose()
