@@ -11,7 +11,6 @@ namespace ShareClient.Component
         private readonly IReceiveDataProvider _ReceiveDataProvider;
 
         public event EventHandler ShareClientClosed;
-        public event EventHandler<SystemDataRecieveEventArgs> SystemDataRecieved;
 
         public IClientSocket Socket { get; }
         public IClientManeger ClientManager { get; }
@@ -73,10 +72,7 @@ namespace ShareClient.Component
             }
             else if (receiveData.Header.DataType == SendDataType.System)
             {
-                Task.Factory.StartNew(() =>
-                {
-                    SystemDataRecieved?.Invoke(this, new SystemDataRecieveEventArgs(receiveData.DataPart));
-                });
+                RecieveSystemData(receiveData);
             }
             else
             {
@@ -96,6 +92,11 @@ namespace ShareClient.Component
                     throw new ReceiveDataAnalyzeException(receiveData, "Analyze ReceiveData Fail", ex);
                 }
             }
+        }
+
+        protected  virtual   void RecieveSystemData(ShareClientData receiveData)
+        {
+            //
         }
 
         private void ConnectReceiveData(ShareClientData receiveData)

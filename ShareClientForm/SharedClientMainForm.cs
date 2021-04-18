@@ -240,7 +240,6 @@ namespace SharedDisplayForm
                         PushMessage("接続しました。");
                         _Receiver = new DisplayImageReciver(connection, _SettingForm.FlameLate, PictureArea);
                         _Receiver.Reciver.ShareClientClosed += (_, __) => PushMessage("切断されました。");
-                        _Receiver.Reciver.SystemDataRecieved += (_, __) => PushMessage("System");
                         _Receiver.Start();
                     }
                     else
