@@ -94,7 +94,7 @@ namespace ShareClient.Component
             }
         }
 
-        protected  virtual   void RecieveSystemData(ShareClientData receiveData)
+        protected virtual void RecieveSystemData(ShareClientData receiveData)
         {
             //
         }
@@ -102,14 +102,15 @@ namespace ShareClient.Component
         private void ConnectReceiveData(ShareClientData receiveData)
         {
 
-            foreach (var connect in _SplitBuffer)
+            for (var node = _SplitBuffer.First; node != null; node = node.Next)
             {
+                var connect = node.Value;
                 if (connect.AddMember(receiveData))
                 {
                     if (connect.IsComplete)
                     {
                         AddReceiveData(connect.GetConnectData());
-                        _SplitBuffer.Remove(connect);
+                        _SplitBuffer.Remove(node);
                     }
                     return;
                 }
