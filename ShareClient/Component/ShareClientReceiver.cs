@@ -5,7 +5,7 @@ using ShareClient.Model;
 
 namespace ShareClient.Component
 {
-    public class ShareClientReceiver : IShareClientReceiver
+    public class ShareClientReceiver : IShareClient
     {
         private readonly LinkedList<ISplitConnect> _SplitBuffer = new LinkedList<ISplitConnect>();
         private readonly IReceiveDataProvider _ReceiveDataProvider;
@@ -43,7 +43,7 @@ namespace ShareClient.Component
                     {
                         if (++count > ClientManager.RetryCount || ClientManager.HandleException(ex))
                         {
-                            throw ex;
+                            throw;
                         }
                     }
                 }
@@ -58,7 +58,7 @@ namespace ShareClient.Component
                 var clientData = ShareClientData.FromBytes(ReceiveData);
                 if (clientData != null)
                 {
-                    ClientManager.SetDataSize(clientData.Size);
+                    ClientManager.SetRecieveDataSize(clientData.Size);
                     AnalyzeReceiveData(clientData);
                 }
             }
@@ -101,7 +101,6 @@ namespace ShareClient.Component
 
         private void ConnectReceiveData(ShareClientData receiveData)
         {
-
             for (var node = _SplitBuffer.First; node != null; node = node.Next)
             {
                 var connect = node.Value;

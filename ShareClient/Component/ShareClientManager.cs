@@ -1,50 +1,96 @@
 ﻿using ShareClient.Model;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace ShareClient.Component
 {
     public class ShareClientManager : IClientManeger
     {
-        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim _Semaphore = new SemaphoreSlim(1);
+        private readonly List<int> _SendDataSize = new List<int>();
+        private readonly List<int> _RecieveDataSize = new List<int>();
 
         public ShareClientSpec ClientSpec { get; }
         public int RetryCount { get; set; } = 2;
-
         public int DataSizeCapacity { get; set; } = 1000;
-        private readonly List<int> _DataSize = new List<int>();
-        public IReadOnlyList<int> DataSize { get => _DataSize; }
 
         public ShareClientManager(ShareClientSpec clientSpec)
         {
             ClientSpec = clientSpec;
         }
 
-        public virtual bool HandleException(ShareClientException ex)
+        public bool HandleException(ShareClientException ex)
         {
             return false;
         }
 
-        public virtual void SetDataSize(int size)
+        public bool PreSendDataSize(int size)
         {
-            if (DataSize.Count <= DataSizeCapacity)
+            if (_SendDataSize.Count <= DataSizeCapacity)
             {
-                DataAdd(size);
+                _Semaphore.Wait();
+                _SendDataSize.Add(size);
+                _Semaphore.Release();
+            }
+
+            return true;
+        }
+
+        public virtual void SetRecieveDataSize(int size)
+        {
+            if (_RecieveDataSize.Count <= DataSizeCapacity)
+            {
+                _Semaphore.Wait();
+                _RecieveDataSize.Add(size);
+                _Semaphore.Release();
             }
         }
 
-        private void DataAdd(int size)
+        public int GetSendDataSize()
         {
-            semaphore.Wait();
-            _DataSize.Add(size);
-            semaphore.Release();
+            int size = 0;
+            if (_SendDataSize.Count != 0)
+            {
+                _Semaphore.Wait();
+                size = _SendDataSize.Sum();
+                _Semaphore.Release();
+            }
+
+            return size;
         }
 
-        public void DataSizeClear()
+        public int GetRecieveDataSize()
         {
-            semaphore.Wait();
-            _DataSize.Clear();
-            semaphore.Release();
+            int size = 0;
+            if (_RecieveDataSize.Count != 0)
+            {
+                _Semaphore.Wait();
+                size = _RecieveDataSize.Sum();
+                _Semaphore.Release();
+            }
+
+            return size;
+        }
+
+        public void SendDataSizeClear()
+        {
+            if (_SendDataSize.Count != 0)
+            {
+                _Semaphore.Wait();
+                _SendDataSize.Clear();
+                _Semaphore.Release();
+            }
+        }
+
+        public void RecieveDataSizeClear()
+        {
+            if (_RecieveDataSize.Count != 0)
+            {
+                _Semaphore.Wait();
+                _RecieveDataSize.Clear();
+                _Semaphore.Release();
+            }
         }
     }
 }

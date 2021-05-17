@@ -8,18 +8,18 @@ namespace ShareClient.Component
 {
     internal class UdpClientSocket : ShareClientStatus, IClientSocket
     {
-        private Connection connection;
-        private UdpClient udpClient;
+        private Connection _Connection;
+        private UdpClient _UdpClient;
 
         public UdpClientSocket() { }
 
         public void Open(Connection connection)
         {
-            this.connection = connection;
+            _Connection = connection;
             try
             {
-                udpClient = new UdpClient(connection.LocalEndPoint);
-                udpClient.Connect(connection.RemoteEndPoint);
+                _UdpClient = new UdpClient(connection.LocalEndPoint);
+                _UdpClient.Connect(connection.RemoteEndPoint);
             }
             catch (Exception ex)
             {
@@ -40,8 +40,8 @@ namespace ShareClient.Component
             try
             {
                 IPEndPoint receiveEp = null;
-                var receiveData = udpClient.Receive(ref receiveEp);
-                if (connection.RemoteEndPoint.Address.Equals(receiveEp.Address))
+                var receiveData = _UdpClient.Receive(ref receiveEp);
+                if (_Connection.RemoteEndPoint.Address.Equals(receiveEp.Address))
                 {
                     return receiveData;
                 }
@@ -66,7 +66,7 @@ namespace ShareClient.Component
             CheckOpenAndThrow();
             try
             {
-                udpClient.Send(sendData, sendData.Length);
+                _UdpClient.Send(sendData, sendData.Length);
             }
             catch (Exception ex)
             {
@@ -93,7 +93,7 @@ namespace ShareClient.Component
         {
             try
             {
-                udpClient?.Dispose();
+                _UdpClient?.Dispose();
             }
             catch
             {

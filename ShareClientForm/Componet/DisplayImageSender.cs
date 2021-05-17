@@ -12,7 +12,7 @@ namespace SharedClientForm.Component
         private readonly System.Timers.Timer _SenderTimer = new System.Timers.Timer();
 
         public ImageFormat Format { get; set; } = ImageFormat.Jpeg;
-        public IShareClientSender Sender { get; }
+        public ShareClientSender Sender { get; }
         public ShareClientManager ClientManager { get; }
 
         public DisplayImageSender(Connection connection, DisplayImageCaputure caputure, int interval)

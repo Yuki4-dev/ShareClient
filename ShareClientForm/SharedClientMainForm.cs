@@ -84,13 +84,13 @@ namespace SharedDisplayForm
             int size = 0;
             try
             {
-                size = _Receiver.ClientManager.DataSize.Sum();
+                size = _Receiver.ClientManager.GetRecieveDataSize();
             }
             catch
             {
             }
             SetSpeed(size, _ReciveParam);
-            _Receiver.ClientManager.DataSizeClear();
+            _Receiver.ClientManager.RecieveDataSizeClear();
         }
 
         private void SendByteTimer_Tick(object sender, EventArgs e)
@@ -103,13 +103,13 @@ namespace SharedDisplayForm
             int size = 0;
             try
             {
-                size = _Sender.ClientManager.DataSize.Sum();
+                size = _Sender.ClientManager.GetSendDataSize();
             }
             catch
             {
             }
             SetSpeed(size, _SendParam);
-            this._Sender.ClientManager.DataSizeClear();
+            this._Sender.ClientManager.SendDataSizeClear();
         }
 
         private void SetSpeed(int size, Parameter parameter)

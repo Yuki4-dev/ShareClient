@@ -17,7 +17,7 @@ namespace ShareClientTest
         {
         }
 
-        public void SetDataSize(int size)
+        public void PreSendDataSize(int size)
         {
             DataSize.Add(size);
         }

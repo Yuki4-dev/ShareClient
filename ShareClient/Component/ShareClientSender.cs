@@ -5,15 +5,16 @@ using System.Threading;
 
 namespace ShareClient.Component
 {
-    public class ShareClientSender : IShareClientSender
+    public class ShareClientSender : IShareClient
     {
         private int atomicCode = 0;
-        private bool stopSendData = false;
         private byte[] oldHash = new byte[0];
         private readonly SemaphoreSlim _Semaphore = new SemaphoreSlim(1);
         private readonly HashAlgorithm _HashAlgorithm = new MD5CryptoServiceProvider();
+        protected bool StopApplicationData { get; set; } = false;
 
         public event EventHandler ShareClientClosed;
+
         public IClientSocket Socket { get; }
         public IClientManeger ClientManager { get; }
         public ClientStatus Status => Socket.Status;
@@ -68,11 +69,6 @@ namespace ShareClient.Component
 
         private void SendData(uint atomicCode, byte[] srcData, int sendLength, int sendIndex, int splitLength, int splitIndex)
         {
-            if (stopSendData)
-            {
-                return;
-            }
-
             var sendData = new byte[sendLength];
             Array.Copy(srcData, sendIndex, sendData, 0, sendData.Length);
 
@@ -81,19 +77,28 @@ namespace ShareClient.Component
                 (byte)splitIndex,
                 (uint)sendData.Length);
 
-            SendData(new ShareClientData(header, sendData));
+            SendShareClientData(new ShareClientData(header, sendData));
         }
 
-        private void SendData(ShareClientData clientData)
+        protected void SendShareClientData(ShareClientData clientData)
         {
+            if (StopApplicationData && clientData.Header.DataType == SendDataType.Application)
+            {
+                return;
+            }
+
             var sendData = clientData.ToByte();
+            if (!ClientManager.PreSendDataSize(sendData.Length))
+            {
+                return;
+            }
+
             int count = 0;
             while (Status == ClientStatus.Open)
             {
                 try
                 {
                     Socket.Send(sendData);
-                    ClientManager.SetDataSize(sendData.Length);
                     Thread.Sleep(1);
                     break;
                 }
@@ -104,14 +109,14 @@ namespace ShareClient.Component
                         if (++count > ClientManager.RetryCount || ClientManager.HandleException(ex))
                         {
                             ex.Header = clientData.Header;
-                            throw ex;
+                            throw;
                         }
                     }
                 }
             }
         }
 
-        private bool EqualsHash(byte[] val1, byte[] val2)
+        protected bool EqualsHash(byte[] val1, byte[] val2)
         {
             if (val1.Length == val2.Length)
             {
@@ -129,7 +134,7 @@ namespace ShareClient.Component
             return false;
         }
 
-        private uint GetAtomicCodeAndIncrement(int splitCount)
+        protected uint GetAtomicCodeAndIncrement(int splitCount)
         {
             _Semaphore.Wait();
             var at = atomicCode;
@@ -152,8 +157,8 @@ namespace ShareClient.Component
 
             try
             {
-                stopSendData = true;
-                SendData(new ShareClientData(ShareClientHeader.CreateClose()));
+                StopApplicationData = true;
+                SendShareClientData(new ShareClientData(ShareClientHeader.CreateClose()));
             }
             catch
             {

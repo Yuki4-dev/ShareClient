@@ -7,6 +7,7 @@ namespace ShareClient.Component
         public ShareClientSpec ClientSpec { get; }
         public int RetryCount { get; }
         public bool HandleException(ShareClientException ex);
-        public void SetDataSize(int size);
+        public bool PreSendDataSize(int size);
+        public void SetRecieveDataSize(int size);
     }
 }

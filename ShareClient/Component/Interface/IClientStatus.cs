@@ -9,6 +9,6 @@ namespace ShareClient.Component
 
     public enum ClientStatus
     {
-        Init, Connect, Open, Close
+        Init, Connect,Open, Close
     }
 }
