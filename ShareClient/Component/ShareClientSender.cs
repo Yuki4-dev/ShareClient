@@ -17,7 +17,6 @@ namespace ShareClient.Component
 
         public IClientSocket Socket { get; }
         public IClientManeger ClientManager { get; }
-        public ClientStatus Status => Socket.Status;
 
         public ShareClientSender(IClientManeger maneger, IClientSocket client)
         {
@@ -27,11 +26,6 @@ namespace ShareClient.Component
 
         public void Send(byte[] data)
         {
-            if (Status != ClientStatus.Open)
-            {
-                throw new InvalidOperationException($"Client : {Status}");
-            }
-
             if (!ClientManager.ClientSpec.SendSameData)
             {
                 var hash = _HashAlgorithm.ComputeHash(data);
@@ -94,7 +88,7 @@ namespace ShareClient.Component
             }
 
             int count = 0;
-            while (Status == ClientStatus.Open)
+            while (Socket.IsOpen)
             {
                 try
                 {
@@ -104,7 +98,7 @@ namespace ShareClient.Component
                 }
                 catch (ShareClientSocketException ex)
                 {
-                    if (Status == ClientStatus.Open)
+                    if (Socket.IsOpen)
                     {
                         if (++count > ClientManager.RetryCount || ClientManager.HandleException(ex))
                         {
@@ -150,7 +144,7 @@ namespace ShareClient.Component
 
         public void Close()
         {
-            if (Status != ClientStatus.Open)
+            if (!Socket.IsOpen)
             {
                 return;
             }

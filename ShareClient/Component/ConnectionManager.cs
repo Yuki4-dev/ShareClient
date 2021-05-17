@@ -7,15 +7,22 @@ using System.Threading.Tasks;
 
 namespace ShareClient.Component
 {
-    public class ConnectionManager : ShareClientStatus, IConnectionManager
+    public class ConnectionManager : IConnectionManager
     {
         private UdpClient _Client;
+
+        public bool IsConnect { get; private set; } = false;
 
         public ConnectionManager() { }
 
         public async Task<Connection> ConnectAsync(IPEndPoint endPoint, ConnectionData connectionData)
         {
-            Connect();
+            if (IsConnect)
+            {
+                throw new Exception();
+            }
+            IsConnect = true;
+
             return await Connect(endPoint, connectionData);
         }
 
@@ -29,7 +36,7 @@ namespace ShareClient.Component
             }
             catch (Exception ex)
             {
-                if (Status == ClientStatus.Connect)
+                if (IsConnect)
                 {
                     throw new ShareClientException("Connect Failure : " + ex.Message, ex);
                 }
@@ -37,11 +44,8 @@ namespace ShareClient.Component
             }
             finally
             {
+                IsConnect = false;
                 _Client?.Dispose();
-                if (Status == ClientStatus.Connect)
-                {
-                    init();
-                }
             }
         }
 
@@ -57,17 +61,15 @@ namespace ShareClient.Component
                 return null;
             }
 
+            Connection result = null;
             var response = ConnectionResponse.FromByte(cleintData.DataPart);
             if (response != null && response.IsConnect)
             {
-                Open();
-                return new Connection(response.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, (IPEndPoint)_Client.Client.RemoteEndPoint);
+                result = new Connection(response.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, (IPEndPoint)_Client.Client.RemoteEndPoint);
             }
-            else
-            {
-                init();
-                return null;
-            }
+
+            IsConnect = false;
+            return result;
         }
 
         private ShareClientData GetClientData(ConnectionData connectionData)
@@ -83,7 +85,12 @@ namespace ShareClient.Component
 
         public async Task<Connection> AcceptAsync(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, ConnectionResponse> acceptCallback)
         {
-            Connect();
+            if (IsConnect)
+            {
+                throw new Exception();
+            }
+            IsConnect = true;
+
             return await Accept(endPoint, acceptCallback);
         }
 
@@ -96,7 +103,7 @@ namespace ShareClient.Component
             }
             catch (Exception ex)
             {
-                if (Status == ClientStatus.Connect)
+                if (IsConnect)
                 {
                     throw new ShareClientException("Accept Failure : " + ex.Message, ex);
                 }
@@ -104,11 +111,8 @@ namespace ShareClient.Component
             }
             finally
             {
+                IsConnect = false;
                 _Client?.Dispose();
-                if (Status == ClientStatus.Connect)
-                {
-                    init();
-                }
             }
         }
 
@@ -133,7 +137,7 @@ namespace ShareClient.Component
             _Client.Send(responseData.ToByte(), responseData.Size, receiveEp);
             if (result.IsConnect)
             {
-                Open();
+                IsConnect = false;
                 return new Connection(result.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, receiveEp);
             }
 
@@ -151,7 +155,7 @@ namespace ShareClient.Component
             return await Task.Factory.StartNew(() =>
            {
                Connection con = null;
-               while (Status == ClientStatus.Connect)
+               while (IsConnect)
                {
                    con = work.Invoke();
                    Thread.Sleep(100);
@@ -161,15 +165,15 @@ namespace ShareClient.Component
            });
         }
 
-        protected override void CloseClient()
+        public void Cancel()
         {
+            IsConnect = false;
             _Client?.Dispose();
         }
 
-        public void Cancel()
+        public void Dispose()
         {
-            init();
-            _Client?.Dispose();
+            Cancel();
         }
     }
 }

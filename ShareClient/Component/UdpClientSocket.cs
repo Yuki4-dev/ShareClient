@@ -6,33 +6,39 @@ using System.Threading.Tasks;
 
 namespace ShareClient.Component
 {
-    internal class UdpClientSocket : ShareClientStatus, IClientSocket
+    internal class UdpClientSocket : IClientSocket
     {
         private Connection _Connection;
         private UdpClient _UdpClient;
+
+        public bool IsOpen { get; private set; }
 
         public UdpClientSocket() { }
 
         public void Open(Connection connection)
         {
+            if (IsOpen)
+            {
+                throw new ShareClientSocketException("Client is Open.");
+            }
             _Connection = connection;
+
             try
             {
                 _UdpClient = new UdpClient(connection.LocalEndPoint);
                 _UdpClient.Connect(connection.RemoteEndPoint);
+                IsOpen = true;
             }
             catch (Exception ex)
             {
                 throw new ShareClientSocketException("Open Failure : " + ex.Message, ex);
             }
-
-            Open();
         }
 
         public async Task<byte[]> ReceiveAsync()
         {
             CheckOpenAndThrow();
-            return await Task.Factory.StartNew(Receive);
+            return await Task.Run(Receive);
         }
 
         private byte[] Receive()
@@ -50,7 +56,7 @@ namespace ShareClient.Component
             {
                 if (ex is ObjectDisposedException)
                 {
-                    Close();
+                    IsOpen = false;
                 }
                 else
                 {
@@ -64,6 +70,7 @@ namespace ShareClient.Component
         public void Send(byte[] sendData)
         {
             CheckOpenAndThrow();
+
             try
             {
                 _UdpClient.Send(sendData, sendData.Length);
@@ -72,7 +79,7 @@ namespace ShareClient.Component
             {
                 if (ex is ObjectDisposedException)
                 {
-                    Close();
+                    IsOpen = false;
                 }
                 else
                 {
@@ -83,13 +90,18 @@ namespace ShareClient.Component
 
         private void CheckOpenAndThrow()
         {
-            if (Status != ClientStatus.Open)
+            if (!IsOpen)
             {
-                throw new InvalidOperationException($"Socket : {Status}");
+                throw new ShareClientSocketException("Client is Not Open.");
             }
         }
 
-        protected override void CloseClient()
+        public void Dispose()
+        {
+            Close();
+        }
+
+        public void Close()
         {
             try
             {

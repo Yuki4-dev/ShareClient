@@ -11,11 +11,11 @@ namespace ShareClient.Component
         }
 
         public ShareClientSocket() { }
-
+        public abstract bool IsOpen { get; }
         public abstract Task<byte[]> ReceiveAsync();
         public abstract void Send(byte[] sendData);
         public abstract void Open(Connection connection);
-        public abstract ClientStatus Status { get; }
+        public abstract void Close();
         public abstract void Dispose();
     }
 }

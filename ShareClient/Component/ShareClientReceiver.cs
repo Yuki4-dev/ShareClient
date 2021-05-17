@@ -14,7 +14,6 @@ namespace ShareClient.Component
 
         public IClientSocket Socket { get; }
         public IClientManeger ClientManager { get; }
-        public ClientStatus Status => Socket.Status;
 
         public ShareClientReceiver(IClientManeger clientManeger, IClientSocket socket, IReceiveDataProvider provider)
         {
@@ -25,13 +24,8 @@ namespace ShareClient.Component
 
         public async Task ReceiveAsync()
         {
-            if (Status != ClientStatus.Open)
-            {
-                throw new InvalidOperationException($"Client : {Status}");
-            }
-
             int count = 0;
-            while (Status == ClientStatus.Open)
+            while (Socket.IsOpen)
             {
                 try
                 {
@@ -39,7 +33,7 @@ namespace ShareClient.Component
                 }
                 catch (ShareClientException ex)
                 {
-                    if (Status == ClientStatus.Open)
+                    if (Socket.IsOpen)
                     {
                         if (++count > ClientManager.RetryCount || ClientManager.HandleException(ex))
                         {
@@ -134,7 +128,7 @@ namespace ShareClient.Component
 
         public void Close()
         {
-            if (Status != ClientStatus.Open)
+            if (!Socket.IsOpen)
             {
                 return;
             }

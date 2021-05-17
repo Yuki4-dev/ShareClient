@@ -2,7 +2,7 @@
 
 namespace ShareClient.Component
 {
-    public interface IShareClient : IClientStatus, IDisposable
+    public interface IShareClient : IDisposable
     {
         public event EventHandler ShareClientClosed;
         public void Close();

@@ -158,22 +158,20 @@ namespace SharedDisplayForm
                 throwEx = true;
                 PushMessage(ex.Message);
             }
-            finally
+
+            if (connection != null)
             {
-                if (_ClientConnection.Status == ClientStatus.Open)
+                PushMessage("接続しました。");
+                _Sender = new DisplayImageSender(connection, new DisplayImageCaputure(hWnd, _SettingForm.WindowWidth), _SettingForm.FlameLate);
+                _Sender.Format = (ImageFormat)ImageCmb.SelectedItem;
+                _Sender.Sender.ShareClientClosed += (_, __) => PushMessage("切断しました。");
+                _Sender.Start();
+            }
+            else
+            {
+                if (!throwEx)
                 {
-                    PushMessage("接続しました。");
-                    _Sender = new DisplayImageSender(connection, new DisplayImageCaputure(hWnd, _SettingForm.WindowWidth), _SettingForm.FlameLate);
-                    _Sender.Format = (ImageFormat)ImageCmb.SelectedItem;
-                    _Sender.Sender.ShareClientClosed += (_, __) => PushMessage("切断しました。");
-                    _Sender.Start();
-                }
-                else
-                {
-                    if (!throwEx)
-                    {
-                        PushMessage("接続を拒否されました。");
-                    }
+                    PushMessage("接続を拒否されました。");
                 }
             }
         }
@@ -233,19 +231,17 @@ namespace SharedDisplayForm
                 {
                     PushMessage(ex.Message);
                 }
-                finally
+
+                if (connection != null)
                 {
-                    if (_ClientConnection.Status == ClientStatus.Open)
-                    {
-                        PushMessage("接続しました。");
-                        _Receiver = new DisplayImageReciver(connection, _SettingForm.FlameLate, PictureArea);
-                        _Receiver.Reciver.ShareClientClosed += (_, __) => PushMessage("切断されました。");
-                        _Receiver.Start();
-                    }
-                    else
-                    {
-                        PushMessage("切断しました。");
-                    }
+                    PushMessage("接続しました。");
+                    _Receiver = new DisplayImageReciver(connection, _SettingForm.FlameLate, PictureArea);
+                    _Receiver.Reciver.ShareClientClosed += (_, __) => PushMessage("切断されました。");
+                    _Receiver.Start();
+                }
+                else
+                {
+                    PushMessage("切断しました。");
                 }
             }
         }
