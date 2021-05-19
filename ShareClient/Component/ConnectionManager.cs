@@ -19,7 +19,7 @@ namespace ShareClient.Component
         {
             if (IsConnect)
             {
-                throw new Exception();
+                throw new InvalidOperationException("Connecting.");
             }
             IsConnect = true;
 
@@ -87,7 +87,7 @@ namespace ShareClient.Component
         {
             if (IsConnect)
             {
-                throw new Exception();
+                throw new InvalidOperationException("Connecting.");
             }
             IsConnect = true;
 
@@ -152,7 +152,7 @@ namespace ShareClient.Component
 
         private async Task<Connection> WaitResponse(Func<Connection> work)
         {
-            return await Task.Factory.StartNew(() =>
+            return await Task.Run(() =>
            {
                Connection con = null;
                while (IsConnect)
