@@ -15,11 +15,11 @@ namespace SharedClientForm.Component
 
         public DisplayImageReciver(Connection connection, int interval, IPictureArea area)
         {
-            ClientManager = new ShareClientManager(connection.ClientSpec);
+            ClientManager = new(connection.ClientSpec);
 
             var socket = ShareClientSocket.CreateUdpSocket();
             socket.Open(connection);
-            Reciver = new ShareClientReceiver(ClientManager, socket, _ReciveImageProvider);
+            Reciver = new(ClientManager, socket, _ReciveImageProvider);
 
             Area = area;
             _ReciverTimer.Interval = interval;
