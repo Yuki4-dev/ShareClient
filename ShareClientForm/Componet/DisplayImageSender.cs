@@ -9,7 +9,7 @@ namespace SharedClientForm.Component
     public class DisplayImageSender : IDisposable
     {
         private readonly DisplayImageCaputure _Caputure;
-        private readonly System.Timers.Timer _SenderTimer = new System.Timers.Timer();
+        private readonly System.Timers.Timer _SenderTimer = new();
 
         public ImageFormat Format { get; set; } = ImageFormat.Jpeg;
         public ShareClientSender Sender { get; }

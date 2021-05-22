@@ -5,7 +5,7 @@ namespace SharedClientForm
 {
     class PictureArea : Control, IPictureArea
     {
-        protected readonly PictureBox _MainPicture = new PictureBox();
+        protected readonly PictureBox _MainPicture = new ();
 
         public Image DefaultPicture { get; set; }
 
@@ -13,7 +13,6 @@ namespace SharedClientForm
 
         public PictureArea()
         {
-            _MainPicture.Name = "MainPicture";
             _MainPicture.TabStop = false;
             _MainPicture.Dock = DockStyle.Fill;
             _MainPicture.SizeMode = PictureBoxSizeMode.CenterImage;

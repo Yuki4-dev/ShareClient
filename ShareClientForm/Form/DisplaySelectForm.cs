@@ -11,7 +11,7 @@ namespace SharedClientForm
 {
     public partial class DisplaySelectForm : Form
     {
-        private Dictionary<string, IntPtr> windows = new Dictionary<string, IntPtr>();
+        private Dictionary<string, IntPtr> windows = new ();
         public readonly Action<string, IntPtr> SelectedDisplayCallback;
 
         public DisplaySelectForm(Action<string, IntPtr> callback)
@@ -51,7 +51,7 @@ namespace SharedClientForm
             }
         }
 
-        private void WindowTextList_DoubleClick(object sender, System.EventArgs e)
+        private void WindowTextList_DoubleClick(object sender, EventArgs e)
         {
             Selected();
         }

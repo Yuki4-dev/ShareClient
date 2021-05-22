@@ -19,7 +19,6 @@ namespace SharedClientForm.Component
 
         public bool TryGetWindowImage(out Image sendImage)
         {
-
             if (BmpHelper.TryGetWindow(_WindowHandle, out Bitmap windowBmp))
             {
                 if (_WindowWidth > 0)

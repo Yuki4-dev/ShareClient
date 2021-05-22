@@ -23,7 +23,7 @@ namespace SharedClientForm
                 return false;
             }
 
-            windowBmp = new Bitmap(width, height);
+            windowBmp = new (width, height);
             using var g = Graphics.FromImage(windowBmp);
             var dc = g.GetHdc();
             NativeMethod.PrintWindow(hWnd, dc, 0);
@@ -49,7 +49,7 @@ namespace SharedClientForm
             }
 
             var rectangle = new Rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
-            windowBmp = new Bitmap(rectangle.Width, rectangle.Height);
+            windowBmp = new (rectangle.Width, rectangle.Height);
 
             using var g = Graphics.FromImage(windowBmp);
             g.CopyFromScreen(new Point(rectangle.X, rectangle.Y), new Point(0, 0), rectangle.Size);
@@ -60,7 +60,7 @@ namespace SharedClientForm
 
         public static bool TryGetPrimaryWindow(out Bitmap windowBmp)
         {
-            windowBmp = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+            windowBmp = new (Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             var g = Graphics.FromImage(windowBmp);
 
             g.CopyFromScreen(new Point(0, 0), new Point(0, 0), windowBmp.Size);
