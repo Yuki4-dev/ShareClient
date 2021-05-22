@@ -6,32 +6,38 @@ using System.Threading.Tasks;
 
 namespace ShareClientTest
 {
-
     internal class MockClientManager : IClientManeger
     {
         public int RetryCount { get; set; } = 2;
-        public List<int> DataSize { get; } = new List<int>();
-        public ShareClientSpec ClientSpec { get; } = new ShareClientSpec();
+        public List<int> SendDataSize { get; } = new();
+        public List<int> RecieveDataSize { get; } = new();
+        public ShareClientSpec ClientSpec { get; } = new();
 
         public MockClientManager()
         {
-        }
-
-        public void PreSendDataSize(int size)
-        {
-            DataSize.Add(size);
         }
 
         public bool HandleException(ShareClientException ex)
         {
             return true;
         }
+
+        public bool PreSendDataSize(int size)
+        {
+            SendDataSize.Add(size);
+            return true;
+        }
+
+        public void SetRecieveDataSize(int size)
+        {
+            RecieveDataSize.Add(size);
+        }
     }
 
     internal class MockClientSocket : IClientSocket
     {
-        public ClientStatus Status { get; private set; } = ClientStatus.Open;
         public List<byte[]> ImageBytes { get; } = new List<byte[]>();
+        public bool IsOpen { get; private set; }
 
         public void Send(byte[] sendData)
         {
@@ -42,7 +48,7 @@ namespace ShareClientTest
         {
             if (ImageBytes.Count == 1)
             {
-                Status = ClientStatus.Close;
+                IsOpen = false;
             }
             return await Task.Factory.StartNew(() =>
             {
@@ -57,6 +63,10 @@ namespace ShareClientTest
         }
 
         public void Open(Connection connection)
+        {
+        }
+
+        public void Close()
         {
         }
     }

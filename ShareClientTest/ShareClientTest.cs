@@ -35,8 +35,8 @@ namespace ShareClientTest
                 Thread.Yield();
             }
 
-            var size1 = manager.DataSize[0];
-            var size2 = manager.DataSize[1];
+            var size1 = manager.SendDataSize[0];
+            var size2 = manager.RecieveDataSize[0];
             Assert.AreEqual(size1, size2);
             Assert.AreEqual(sendByte.Length, provider.Data.Length);
             for (int i = 0; i < sendByte.Length; i++)
