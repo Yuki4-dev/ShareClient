@@ -36,8 +36,8 @@ namespace ShareClientTest
 
     internal class MockClientSocket : IClientSocket
     {
-        public List<byte[]> ImageBytes { get; } = new List<byte[]>();
-        public bool IsOpen { get; private set; }
+        public List<byte[]> ImageBytes { get; } = new ();
+        public bool IsOpen { get; private set; } = true;
 
         public void Send(byte[] sendData)
         {
