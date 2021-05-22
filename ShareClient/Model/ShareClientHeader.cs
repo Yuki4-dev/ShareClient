@@ -109,5 +109,4 @@ namespace ShareClient.Model
     {
         System, Close, Application
     }
-
 }

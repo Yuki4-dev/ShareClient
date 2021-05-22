@@ -32,11 +32,13 @@ namespace ShareClient.Model
             {
                 return null;
             }
+
             var dataPart = bytes.AsSpan(header.Size).ToArray();
             if (header.DataPartSize != dataPart.Length)
             {
                 return null;
             }
+
             return new ShareClientData(header, dataPart);
         }
     }

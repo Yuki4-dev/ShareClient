@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ShareClient.Model
 {
@@ -28,11 +26,7 @@ namespace ShareClient.Model
         public static ConnectionResponse FromByte(byte[] bytes)
         {
             var connection = ConnectionData.FromByte(bytes.AsSpan().Slice(1).ToArray());
-            if (connection == null)
-            {
-                return null;
-            }
-            return new ConnectionResponse(bytes[0] == 1, connection);
+            return connection != null ? new ConnectionResponse(bytes[0] == 1, connection) : null;
         }
     }
 }
