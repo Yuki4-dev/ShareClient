@@ -7,7 +7,7 @@ namespace ShareClient.Component
 {
     public class ShareClientReceiver : IShareClient
     {
-        private readonly LinkedList<ISplitConnect> _SplitBuffer = new LinkedList<ISplitConnect>();
+        private readonly LinkedList<ISplitConnect> _SplitBuffer = new();
         private readonly IReceiveDataProvider _ReceiveDataProvider;
 
         public event EventHandler ShareClientClosed;
@@ -135,7 +135,7 @@ namespace ShareClient.Component
 
             Socket.Dispose();
             _SplitBuffer.Clear();
-            ShareClientClosed?.Invoke(this, new EventArgs());
+            ShareClientClosed?.Invoke(this, new());
         }
     }
 }

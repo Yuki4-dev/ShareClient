@@ -30,7 +30,7 @@ namespace ShareClient.Component
         {
             try
             {
-                _Client = new UdpClient();
+                _Client = new();
                 _Client.Connect(endPoint);
                 return await WaitResponse(() => ConnectWork(GetClientData(connectionData)));
             }
@@ -75,7 +75,7 @@ namespace ShareClient.Component
         private ShareClientData GetClientData(ConnectionData connectionData)
         {
             var header = ShareClientHeader.CreateSystem((uint)connectionData.Size);
-            return new ShareClientData(header, connectionData.ToByte());
+            return new(header, connectionData.ToByte());
         }
 
         public async Task<Connection> AcceptAsync(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, bool> acceptCallback)
@@ -98,7 +98,7 @@ namespace ShareClient.Component
         {
             try
             {
-                _Client = new UdpClient(endPoint);
+                _Client = new(endPoint);
                 return await WaitResponse(() => AcceptWork(acceptCallback));
             }
             catch (Exception ex)
@@ -138,7 +138,7 @@ namespace ShareClient.Component
             if (result.IsConnect)
             {
                 IsConnect = false;
-                return new Connection(result.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, receiveEp);
+                return new(result.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, receiveEp);
             }
 
             return null;
@@ -147,7 +147,7 @@ namespace ShareClient.Component
         private ShareClientData GetResponseData(ConnectionResponse response)
         {
             var header = ShareClientHeader.CreateSystem((uint)response.Size);
-            return new ShareClientData(header, response.ToByte());
+            return new(header, response.ToByte());
         }
 
         private async Task<Connection> WaitResponse(Func<Connection> work)

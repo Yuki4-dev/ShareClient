@@ -7,9 +7,9 @@ namespace ShareClient.Component
 {
     public class ShareClientManager : IClientManeger
     {
-        private readonly SemaphoreSlim _Semaphore = new SemaphoreSlim(1);
-        private readonly List<int> _SendDataSize = new List<int>();
-        private readonly List<int> _RecieveDataSize = new List<int>();
+        private readonly SemaphoreSlim _Semaphore = new(1);
+        private readonly List<int> _SendDataSize = new();
+        private readonly List<int> _RecieveDataSize = new();
 
         public ShareClientSpec ClientSpec { get; }
         public int RetryCount { get; set; } = 2;

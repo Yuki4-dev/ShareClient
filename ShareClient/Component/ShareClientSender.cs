@@ -8,8 +8,8 @@ namespace ShareClient.Component
     public class ShareClientSender : IShareClient
     {
         private int atomicCode = 0;
-        private byte[] oldHash = new byte[0];
-        private readonly SemaphoreSlim _Semaphore = new SemaphoreSlim(1);
+        private byte[] oldHash = Array.Empty<byte>();
+        private readonly SemaphoreSlim _Semaphore = new(1);
         private readonly HashAlgorithm _HashAlgorithm = new MD5CryptoServiceProvider();
         protected bool StopApplicationData { get; set; } = false;
 
@@ -71,7 +71,7 @@ namespace ShareClient.Component
                 (byte)splitIndex,
                 (uint)sendData.Length);
 
-            SendShareClientData(new ShareClientData(header, sendData));
+            SendShareClientData(new(header, sendData));
         }
 
         protected void SendShareClientData(ShareClientData clientData)
@@ -152,7 +152,7 @@ namespace ShareClient.Component
             try
             {
                 StopApplicationData = true;
-                SendShareClientData(new ShareClientData(ShareClientHeader.CreateClose()));
+                SendShareClientData(new(ShareClientHeader.CreateClose()));
             }
             catch
             {
@@ -160,7 +160,7 @@ namespace ShareClient.Component
             finally
             {
                 Socket.Dispose();
-                ShareClientClosed?.Invoke(this, new EventArgs());
+                ShareClientClosed?.Invoke(this, new());
             }
         }
     }

@@ -25,7 +25,7 @@ namespace ShareClient.Component
 
             try
             {
-                _UdpClient = new UdpClient(connection.LocalEndPoint);
+                _UdpClient = new(connection.LocalEndPoint);
                 _UdpClient.Connect(connection.RemoteEndPoint);
                 IsOpen = true;
             }

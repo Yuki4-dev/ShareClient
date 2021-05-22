@@ -6,8 +6,8 @@ namespace SharedClientForm.Component
 {
     public class DisplayImageReciver : IDisposable
     {
-        private readonly System.Timers.Timer _ReciverTimer = new System.Timers.Timer();
-        private readonly ReciveImageProvider _ReciveImageProvider = new ReciveImageProvider();
+        private readonly System.Timers.Timer _ReciverTimer = new();
+        private readonly ReciveImageProvider _ReciveImageProvider = new();
 
         public ShareClientManager ClientManager { get; }
         public ShareClientReceiver Reciver { get; }
