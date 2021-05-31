@@ -20,12 +20,12 @@ namespace ShareClient.Component
             ClientSpec = clientSpec;
         }
 
-        public bool HandleException(ShareClientException ex)
+        public virtual bool HandleException(ShareClientException ex)
         {
             return false;
         }
 
-        public bool PreSendDataSize(int size)
+        public virtual bool PreSendDataSize(int size)
         {
             if (_SendDataSize.Count <= DataSizeCapacity)
             {

@@ -9,7 +9,7 @@ namespace ShareClient.Component
     {
         private int atomicCode = 0;
         private byte[] oldHash = Array.Empty<byte>();
-        private readonly SemaphoreSlim _Semaphore = new(1);
+        private readonly object _LockObj = new();
         private readonly HashAlgorithm _HashAlgorithm = new MD5CryptoServiceProvider();
         protected bool StopApplicationData { get; set; } = false;
 
@@ -130,11 +130,12 @@ namespace ShareClient.Component
 
         protected uint GetAtomicCodeAndIncrement(int splitCount)
         {
-            _Semaphore.Wait();
-            var at = atomicCode;
-            atomicCode += splitCount;
-            _Semaphore.Release();
-            return (uint)at;
+            lock (_LockObj)
+            {
+                var at = atomicCode;
+                atomicCode += splitCount;
+                return (uint)at;
+            }
         }
 
         public void Dispose()
