@@ -81,23 +81,26 @@ namespace SharedDisplayForm
             // 
             // ClientHostTextBox
             // 
-            this.ClientHostTextBox.Location = new System.Drawing.Point(109, 23);
+            this.ClientHostTextBox.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.ClientHostTextBox.Location = new System.Drawing.Point(109, 14);
             this.ClientHostTextBox.Name = "ClientHostTextBox";
-            this.ClientHostTextBox.Size = new System.Drawing.Size(212, 25);
+            this.ClientHostTextBox.Size = new System.Drawing.Size(212, 34);
             this.ClientHostTextBox.TabIndex = 3;
             // 
             // ClientPortTextBox
             // 
-            this.ClientPortTextBox.Location = new System.Drawing.Point(327, 23);
+            this.ClientPortTextBox.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.ClientPortTextBox.Location = new System.Drawing.Point(327, 14);
             this.ClientPortTextBox.Name = "ClientPortTextBox";
-            this.ClientPortTextBox.Size = new System.Drawing.Size(100, 25);
+            this.ClientPortTextBox.Size = new System.Drawing.Size(100, 34);
             this.ClientPortTextBox.TabIndex = 4;
             // 
             // ServerPortTextBox
             // 
-            this.ServerPortTextBox.Location = new System.Drawing.Point(327, 71);
+            this.ServerPortTextBox.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.ServerPortTextBox.Location = new System.Drawing.Point(327, 62);
             this.ServerPortTextBox.Name = "ServerPortTextBox";
-            this.ServerPortTextBox.Size = new System.Drawing.Size(100, 25);
+            this.ServerPortTextBox.Size = new System.Drawing.Size(100, 34);
             this.ServerPortTextBox.TabIndex = 4;
             // 
             // StartBtn
@@ -126,7 +129,7 @@ namespace SharedDisplayForm
             // 
             this.ImageCmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ImageCmb.FormattingEnabled = true;
-            this.ImageCmb.Location = new System.Drawing.Point(523, 13);
+            this.ImageCmb.Location = new System.Drawing.Point(523, 21);
             this.ImageCmb.Name = "ImageCmb";
             this.ImageCmb.Size = new System.Drawing.Size(71, 25);
             this.ImageCmb.TabIndex = 6;
@@ -144,7 +147,7 @@ namespace SharedDisplayForm
             this.SpeedBtn.TabIndex = 7;
             this.SpeedBtn.Text = "<";
             this.SpeedBtn.UseVisualStyleBackColor = true;
-            this.SpeedBtn.IsDropChanged += SpeedBtn_IsDropChanged;
+            this.SpeedBtn.IsDropChanged += new System.EventHandler(this.SpeedBtn_IsDropChanged);
             // 
             // SpeedMeter
             // 
@@ -168,7 +171,7 @@ namespace SharedDisplayForm
             this.SettingBtn.Size = new System.Drawing.Size(55, 32);
             this.SettingBtn.TabIndex = 0;
             this.SettingBtn.Text = "...";
-            this.SettingBtn.IsDropChanged += SettingBtn_IsDropChanged;
+            this.SettingBtn.IsDropChanged += new System.EventHandler(this.SettingBtn_IsDropChanged);
             // 
             // SharedClientMainForm
             // 

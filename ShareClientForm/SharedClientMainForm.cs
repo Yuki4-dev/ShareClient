@@ -265,8 +265,8 @@ namespace SharedDisplayForm
 
             var l = new Label()
             {
-                Width = 300,
-                Height = 100,
+                Width = 400,
+                Height = 200,
                 Text = msg,
                 TextAlign = ContentAlignment.MiddleLeft,
                 Font = new Font("Yu Gothic UI", 20, FontStyle.Bold),
