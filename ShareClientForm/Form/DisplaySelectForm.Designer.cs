@@ -52,9 +52,6 @@ namespace SharedClientForm
             // 
             // DisplayArea
             // 
-            this.DisplayArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.DisplayArea.DefaultPicture = null;
             this.DisplayArea.Location = new System.Drawing.Point(266, 9);
             this.DisplayArea.Name = "DisplayArea";
@@ -81,8 +78,8 @@ namespace SharedClientForm
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.BackColor = Color.White;
             this.Controls.Add(this.SelectBtn);
-            this.Controls.Add(this.DisplayArea);
             this.Controls.Add(this.WindowTextList);
+            this.Controls.Add(this.DisplayArea);
             this.Name = "SheardDisplaySelectForm";
             this.Text = "SheardDisplaySelectForm";
             this.ResumeLayout(false);

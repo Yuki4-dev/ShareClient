@@ -43,7 +43,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 33);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(70, 13);
+            this.label1.Size = new System.Drawing.Size(88, 19);
             this.label1.TabIndex = 0;
             this.label1.Text = "フレーム(msec)";
             // 
@@ -52,20 +52,20 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 59);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 13);
+            this.label2.Size = new System.Drawing.Size(90, 19);
             this.label2.TabIndex = 0;
             this.label2.Text = "画像サイズ(幅)";
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(88, 31);
+            this.numericUpDown1.Location = new System.Drawing.Point(114, 31);
             this.numericUpDown1.Minimum = new decimal(new int[] {
             10,
             0,
             0,
             0});
             this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(98, 22);
+            this.numericUpDown1.Size = new System.Drawing.Size(98, 25);
             this.numericUpDown1.TabIndex = 1;
             this.numericUpDown1.Value = new decimal(new int[] {
             30,
@@ -75,14 +75,14 @@
             // 
             // numericUpDown2
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(88, 57);
+            this.numericUpDown2.Location = new System.Drawing.Point(114, 62);
             this.numericUpDown2.Maximum = new decimal(new int[] {
             3000,
             0,
             0,
             0});
             this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(98, 22);
+            this.numericUpDown2.Size = new System.Drawing.Size(98, 25);
             this.numericUpDown2.TabIndex = 1;
             // 
             // label3
@@ -90,24 +90,24 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 9);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(70, 13);
+            this.label3.Size = new System.Drawing.Size(37, 19);
             this.label3.TabIndex = 0;
             this.label3.Text = "名前";
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(87, 3);
+            this.textBox1.Location = new System.Drawing.Point(114, 3);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(98, 22);
+            this.textBox1.Size = new System.Drawing.Size(98, 25);
             this.textBox1.TabIndex = 2;
             this.textBox1.Text = "test";
             // 
             // SettingForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(197, 90);
+            this.ClientSize = new System.Drawing.Size(239, 93);
             this.ControlBox = false;
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.numericUpDown2);
