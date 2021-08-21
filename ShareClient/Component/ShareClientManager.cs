@@ -14,6 +14,7 @@ namespace ShareClient.Component
         public ShareClientSpec ClientSpec { get; }
         public int RetryCount { get; set; } = 2;
         public int DataSizeCapacity { get; set; } = 1000;
+        public IShareClientLogger Logger { get; private set; } = new DebugLogger();
 
         public ShareClientManager(ShareClientSpec clientSpec)
         {
@@ -91,6 +92,16 @@ namespace ShareClient.Component
                 _RecieveDataSize.Clear();
                 _Semaphore.Release();
             }
+        }
+
+        public void SetLogger(IShareClientLogger logger)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            Logger = logger;
         }
     }
 }
