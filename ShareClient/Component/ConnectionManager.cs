@@ -13,17 +13,17 @@ namespace ShareClient.Component
 
         public int ConnectionDelay { get; set; } = 100;
 
-
         public ConnectionManager() { }
 
         public async Task<Connection> ConnectAsync(IPEndPoint endPoint, ConnectionData connectionData)
         {
-            logger.Info($"Start Connect. -> {endPoint.Address} : {endPoint.Port}");
             return await ConnectAsync(endPoint, connectionData, (reponse) => reponse.IsConnect);
         }
 
         public async Task<Connection> ConnectAsync(IPEndPoint endPoint, ConnectionData connectionData, Func<ConnectionResponse, bool> responseAccept)
         {
+            logger.Info($"Start Connect. -> {endPoint.Address} : {endPoint.Port}");
+
             if (IsConnect)
             {
                 var ex = new InvalidOperationException($"ConnectAsync Already Run Another Connect Process. -> {endPoint.Address} : {endPoint.Port}");
@@ -96,12 +96,13 @@ namespace ShareClient.Component
 
         public async Task<Connection> AcceptAsync(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, bool> requestAccept)
         {
-            logger.Info($"Start Accept. -> {endPoint.Address} : {endPoint.Port}");
             return await AcceptAsync(endPoint, (receiveEp, connectionData) => new ConnectionResponse(requestAccept(receiveEp, connectionData), connectionData));
         }
 
         public async Task<Connection> AcceptAsync(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, ConnectionResponse> requestAccept)
         {
+            logger.Info($"Start Accept. -> {endPoint.Address} : {endPoint.Port}");
+
             if (IsConnect)
             {
                 var ex = new InvalidOperationException($"AcceptAsync Already Run Another Connect Process. -> {endPoint.Address} : {endPoint.Port}");

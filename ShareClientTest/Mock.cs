@@ -2,6 +2,7 @@
 using ShareClient.Component;
 using ShareClient.Model;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ShareClientTest
@@ -12,6 +13,7 @@ namespace ShareClientTest
         public List<int> SendDataSize { get; } = new();
         public List<int> RecieveDataSize { get; } = new();
         public ShareClientSpec ClientSpec { get; } = new();
+        public IShareClientLogger Logger => new MockShareClientLogger();
 
         public MockClientManager()
         {
@@ -36,7 +38,7 @@ namespace ShareClientTest
 
     internal class MockClientSocket : IClientSocket
     {
-        public List<byte[]> ImageBytes { get; } = new ();
+        public List<byte[]> ImageBytes { get; } = new();
         public bool IsOpen { get; private set; } = true;
 
         public void Send(byte[] sendData)
@@ -80,6 +82,25 @@ namespace ShareClientTest
         public void Receive(byte[] data)
         {
             Data = data;
+        }
+    }
+
+    internal class MockShareClientLogger : IShareClientLogger
+    {
+        public void Error(string message, Exception exception)
+        {
+        }
+
+        public void Info(string message)
+        {
+        }
+
+        public void Receive(EndPoint iPEndPoint, byte[] receiveData)
+        {
+        }
+
+        public void Send(EndPoint iPEndPoint, byte[] sendData)
+        {
         }
     }
 }

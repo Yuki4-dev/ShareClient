@@ -8,6 +8,7 @@ namespace SharedClientForm.Component
 {
     public class DisplayImageSender : IDisposable
     {
+        private bool isDispose = false;
         private readonly DisplayImageCaputure _Caputure;
         private readonly System.Timers.Timer _SenderTimer = new();
 
@@ -46,7 +47,10 @@ namespace SharedClientForm.Component
                 finally
                 {
                     sendImage.Dispose();
-                    _SenderTimer.Start();
+                    if (!isDispose)
+                    {
+                        _SenderTimer.Start();
+                    }
                 }
             }
         }
@@ -58,6 +62,7 @@ namespace SharedClientForm.Component
 
         public void Dispose()
         {
+            isDispose = true;
             _SenderTimer.Dispose();
             Sender.Dispose();
         }

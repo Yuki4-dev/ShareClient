@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -9,34 +10,24 @@ namespace ShareClient.Model
 {
     internal class DebugLogger : IShareClientLogger
     {
-        public TextWriter TextWriter { get; set; } = Console.Out;
-
         public void Error(string message, Exception exception)
         {
-#if DEBUG
-            TextWriter.WriteLine(message);
-#endif
+            Debug.WriteLine(message);
         }
 
         public void Info(string message)
         {
-#if DEBUG
-            TextWriter.WriteLine(message);
-#endif
+            Debug.WriteLine(message);
         }
 
         public void Receive(EndPoint iPEndPoint, byte[] receiveData)
         {
-#if DEBUG
-            TextWriter.WriteLine($"Receive -> {iPEndPoint.ToString()}");
-#endif
+            Debug.WriteLine($"Receive -> {iPEndPoint.ToString()}");
         }
 
         public void Send(EndPoint iPEndPoint, byte[] sendData)
         {
-#if DEBUG
-            TextWriter.WriteLine($"Send -> {iPEndPoint.ToString()}");
-#endif
+            Debug.WriteLine($"Send -> {iPEndPoint.ToString()}");
         }
     }
 }

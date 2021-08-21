@@ -46,7 +46,9 @@ namespace ShareClient.Component
             int splitCount = (bytes.Length / sendSize) + 1;
             if (splitCount > byte.MaxValue)
             {
-                throw new ArgumentOutOfRangeException($"SplitCount : {splitCount}");
+                var ex = new ArgumentOutOfRangeException($"SplitCount : {splitCount}");
+                ClientManager.Logger.Error($"Over SplitCount : {byte.MaxValue}", ex);
+                throw ex;
             }
 
             int splitIndex = 0;
@@ -78,12 +80,14 @@ namespace ShareClient.Component
         {
             if (StopApplicationData && clientData.Header.DataType == SendDataType.Application)
             {
+                ClientManager.Logger.Info($"Stop Application or ShareClientData Convert Fail or Type {clientData.Header.DataType}");
                 return;
             }
 
             var sendData = clientData.ToByte();
             if (!ClientManager.PreSendDataSize(sendData.Length))
             {
+                ClientManager.Logger.Info($"Dont't Allow  Size of Send  Byte  : {sendData.Length}");
                 return;
             }
 
@@ -98,10 +102,13 @@ namespace ShareClient.Component
                 }
                 catch (ShareClientSocketException ex)
                 {
+                    ClientManager.Logger.Error($"Sokect Send Throw Exception, Socket IsOpen : {Socket.IsOpen}", ex);
                     if (Socket.IsOpen)
                     {
+                        ClientManager.Logger.Error($"Exception Throw Count : {count + 1 }, RetryCount: {ClientManager.RetryCount}", null);
                         if (++count > ClientManager.RetryCount || ClientManager.HandleException(ex))
                         {
+                            ClientManager.Logger.Error($"Throw Exception.", ex);
                             ex.Header = clientData.Header;
                             throw;
                         }
@@ -147,6 +154,7 @@ namespace ShareClient.Component
         {
             if (!Socket.IsOpen)
             {
+                ClientManager.Logger.Info("Socket is Not Open.");
                 return;
             }
 
@@ -155,13 +163,15 @@ namespace ShareClient.Component
                 StopApplicationData = true;
                 SendShareClientData(new(ShareClientHeader.CreateClose()));
             }
-            catch
+            catch (Exception ex)
             {
+                ClientManager.Logger.Error("Fail Close.", ex);
             }
             finally
             {
                 Socket.Dispose();
                 ShareClientClosed?.Invoke(this, new());
+                ClientManager.Logger.Info("Sender Socket Close.");
             }
         }
     }

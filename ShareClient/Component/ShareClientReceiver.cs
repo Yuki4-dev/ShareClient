@@ -33,10 +33,13 @@ namespace ShareClient.Component
                 }
                 catch (ShareClientException ex)
                 {
+                    ClientManager.Logger.Error($"Sokect Receive Throw Exception, Socket IsOpen : {Socket.IsOpen}", ex);
                     if (Socket.IsOpen)
                     {
+                        ClientManager.Logger.Error($"Exception Throw Count : {count + 1 }, RetryCount: {ClientManager.RetryCount}", null);
                         if (++count > ClientManager.RetryCount || ClientManager.HandleException(ex))
                         {
+                            ClientManager.Logger.Error($"Throw Exception.", ex);
                             throw;
                         }
                     }
@@ -62,6 +65,7 @@ namespace ShareClient.Component
         {
             if (receiveData.Header.DataType == SendDataType.Close)
             {
+                ClientManager.Logger.Info("Receive Request Close.");
                 Close();
             }
             else if (receiveData.Header.DataType == SendDataType.System)
@@ -83,7 +87,9 @@ namespace ShareClient.Component
                 }
                 catch (Exception ex)
                 {
-                    throw new ReceiveDataAnalyzeException(receiveData, "Analyze ReceiveData Fail", ex);
+                    var re = new ReceiveDataAnalyzeException(receiveData, "Fail Analyze ReceiveData.", ex);
+                    ClientManager.Logger.Error(re.Message, re);
+                    throw re;
                 }
             }
         }
@@ -130,12 +136,14 @@ namespace ShareClient.Component
         {
             if (!Socket.IsOpen)
             {
+                ClientManager.Logger.Info("Socket is Not Open.");
                 return;
             }
 
             Socket.Dispose();
             _SplitBuffer.Clear();
             ShareClientClosed?.Invoke(this, new());
+            ClientManager.Logger.Info("Receiver Socket Close.");
         }
     }
 }
