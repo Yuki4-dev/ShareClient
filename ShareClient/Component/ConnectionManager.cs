@@ -1,44 +1,55 @@
 ﻿using ShareClient.Model;
-using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ShareClient.Component
 {
     public class ConnectionManager : IConnectionManager
     {
         private UdpClient _Client;
+        private IShareClientLogger logger = new DebugLogger();
 
         public bool IsConnect { get; private set; } = false;
+
+        public int ConnectionDelay { get; set; } = 100;
+
 
         public ConnectionManager() { }
 
         public async Task<Connection> ConnectAsync(IPEndPoint endPoint, ConnectionData connectionData)
         {
+            logger.Info($"Start Connect. -> {endPoint.Address} : {endPoint.Port}");
+            return await ConnectAsync(endPoint, connectionData, (reponse) => reponse.IsConnect);
+        }
+
+        public async Task<Connection> ConnectAsync(IPEndPoint endPoint, ConnectionData connectionData, Func<ConnectionResponse, bool> responseAccept)
+        {
             if (IsConnect)
             {
-                throw new InvalidOperationException("Connecting.");
+                var ex = new InvalidOperationException($"ConnectAsync Already Run Another Connect Process. -> {endPoint.Address} : {endPoint.Port}");
+                logger.Error(ex.Message, ex);
+                throw ex;
             }
             IsConnect = true;
 
-            return await Connect(endPoint, connectionData);
+            return await Connect(endPoint, connectionData, responseAccept);
         }
 
-        private async Task<Connection> Connect(IPEndPoint endPoint, ConnectionData connectionData)
+        private async Task<Connection> Connect(IPEndPoint endPoint, ConnectionData connectionData, Func<ConnectionResponse, bool> responseAccept)
         {
             try
             {
                 _Client = new();
                 _Client.Connect(endPoint);
-                return await WaitResponse(() => ConnectWork(GetClientData(connectionData)));
+                return await WaitResponse(() => ConnectWork(GetClientData(connectionData), responseAccept));
             }
             catch (Exception ex)
             {
                 if (IsConnect)
                 {
-                    throw new ShareClientException("Connect Failure : " + ex.Message, ex);
+                    var sce = new ShareClientException($"Fail Connect. {ex.Message} -> {endPoint.Address} : {endPoint.Port}", ex);
+                    logger.Error(sce.Message, sce);
+                    throw sce;
                 }
                 return null;
             }
@@ -49,23 +60,28 @@ namespace ShareClient.Component
             }
         }
 
-        private Connection ConnectWork(ShareClientData connectData)
+        private Connection ConnectWork(ShareClientData connectData, Func<ConnectionResponse, bool> responseAccept)
         {
             _Client.Send(connectData.ToByte(), connectData.Size);
+            logger.Send(_Client.Client.RemoteEndPoint, connectData.ToByte());
 
             IPEndPoint receiveEp = null;
-            var ReceiveData = _Client.Receive(ref receiveEp);
-            var cleintData = ShareClientData.FromBytes(ReceiveData);
-            if (cleintData == null || cleintData.Header.DataType != SendDataType.System)
+            var receiveData = _Client.Receive(ref receiveEp);
+            logger.Receive(receiveEp, receiveData);
+
+            var clientData = ShareClientData.FromBytes(receiveData);
+            if (clientData == null || clientData.Header.DataType != SendDataType.System)
             {
+                logger.Info($"ShareClientData Convert Fail or Type {clientData.Header.DataType}. -> {receiveEp.Address} : {receiveEp.Port}");
                 return null;
             }
 
             Connection result = null;
-            var response = ConnectionResponse.FromByte(cleintData.DataPart);
-            if (response != null && response.IsConnect)
+            var response = ConnectionResponse.FromByte(clientData.DataPart);
+            if (response != null && responseAccept.Invoke(response))
             {
-                result = new Connection(response.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, (IPEndPoint)_Client.Client.RemoteEndPoint);
+                logger.Info($"Connect Succes. -> {receiveEp.Address} : {receiveEp.Port}");
+                result = new(response.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, (IPEndPoint)_Client.Client.RemoteEndPoint);
             }
 
             IsConnect = false;
@@ -78,34 +94,39 @@ namespace ShareClient.Component
             return new(header, connectionData.ToByte());
         }
 
-        public async Task<Connection> AcceptAsync(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, bool> acceptCallback)
+        public async Task<Connection> AcceptAsync(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, bool> requestAccept)
         {
-            return await AcceptAsync(endPoint, (receiveEp, connectionData) => new ConnectionResponse(acceptCallback(receiveEp, connectionData), connectionData));
+            logger.Info($"Start Accept. -> {endPoint.Address} : {endPoint.Port}");
+            return await AcceptAsync(endPoint, (receiveEp, connectionData) => new ConnectionResponse(requestAccept(receiveEp, connectionData), connectionData));
         }
 
-        public async Task<Connection> AcceptAsync(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, ConnectionResponse> acceptCallback)
+        public async Task<Connection> AcceptAsync(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, ConnectionResponse> requestAccept)
         {
             if (IsConnect)
             {
-                throw new InvalidOperationException("Connecting.");
+                var ex = new InvalidOperationException($"AcceptAsync Already Run Another Connect Process. -> {endPoint.Address} : {endPoint.Port}");
+                logger.Error(ex.Message, ex);
+                throw ex;
             }
             IsConnect = true;
 
-            return await Accept(endPoint, acceptCallback);
+            return await Accept(endPoint, requestAccept);
         }
 
-        private async Task<Connection> Accept(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, ConnectionResponse> acceptCallback)
+        private async Task<Connection> Accept(IPEndPoint endPoint, Func<IPEndPoint, ConnectionData, ConnectionResponse> requestAccept)
         {
             try
             {
                 _Client = new(endPoint);
-                return await WaitResponse(() => AcceptWork(acceptCallback));
+                return await WaitResponse(() => AcceptWork(requestAccept));
             }
             catch (Exception ex)
             {
                 if (IsConnect)
                 {
-                    throw new ShareClientException("Accept Failure : " + ex.Message, ex);
+                    var se = new ShareClientException($"Fail Accept. {ex.Message} -> {endPoint.Address} : {endPoint.Port}", ex);
+                    logger.Error(se.Message, se);
+                    throw se;
                 }
                 return null;
             }
@@ -116,28 +137,37 @@ namespace ShareClient.Component
             }
         }
 
-        private Connection AcceptWork(Func<IPEndPoint, ConnectionData, ConnectionResponse> acceptCallback)
+        private Connection AcceptWork(Func<IPEndPoint, ConnectionData, ConnectionResponse> requestAccept)
         {
             IPEndPoint receiveEp = null;
             var receiveData = _Client.Receive(ref receiveEp);
+            logger.Receive(receiveEp, receiveData);
+
             var clientData = ShareClientData.FromBytes(receiveData);
             if (clientData == null || clientData.Header.DataType != SendDataType.System)
             {
+                logger.Info($"ShareClientData Convert Fail or Type {clientData.Header.DataType}. -> {receiveEp.Address} : {receiveEp.Port}");
                 return null;
             }
 
             var connectionData = ConnectionData.FromByte(clientData.DataPart);
             if (connectionData == null)
             {
+                logger.Info($"ConnectionData Convert Fail. -> {receiveEp.Address} : {receiveEp.Port}");
                 return null;
             }
 
-            var result = acceptCallback.Invoke(receiveEp, connectionData);
+            var result = requestAccept.Invoke(receiveEp, connectionData);
+            logger.Info($"RequestAccept is {result.IsConnect}. -> {receiveEp.Address} : {receiveEp.Port}");
+
             var responseData = GetResponseData(result);
             _Client.Send(responseData.ToByte(), responseData.Size, receiveEp);
+            logger.Send(receiveEp, responseData.ToByte());
+
             if (result.IsConnect)
             {
                 IsConnect = false;
+                logger.Info($"Accept Succes. -> {receiveEp.Address} : {receiveEp.Port}");
                 return new(result.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, receiveEp);
             }
 
@@ -157,22 +187,36 @@ namespace ShareClient.Component
                Connection con = null;
                while (IsConnect)
                {
+                   logger.Info($"Run Wait Procces.");
                    con = work.Invoke();
-                   Thread.Sleep(100);
+                   Thread.Sleep(ConnectionDelay);
                }
 
+               logger.Info($"Exit Wait Procces.");
                return con;
            });
         }
 
+        public void SetLogger(IShareClientLogger logger)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            this.logger = logger;
+        }
+
         public void Cancel()
         {
+            logger.Info($"Cancel.");
             IsConnect = false;
             _Client?.Dispose();
         }
 
         public void Dispose()
         {
+            logger.Info($"Dispose.");
             Cancel();
         }
     }
