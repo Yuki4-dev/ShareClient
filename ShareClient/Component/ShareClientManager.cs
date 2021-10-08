@@ -26,7 +26,7 @@ namespace ShareClient.Component
         {
             if (SendDataSize == null)
             {
-                return false;
+                return true;
             }
 
             return SendDataSize.Invoke(size);
