@@ -1,9 +1,8 @@
-﻿using System;
-using System.Data;
+﻿using ShareClient.Model;
+using System;
 using System.Net;
 using System.Text;
 using System.Windows.Forms;
-using ShareClient.Model;
 
 namespace SharedClientForm
 {

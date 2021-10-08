@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace SharedClientForm
 {
     public partial class DisplaySelectForm : Form
     {
-        private Dictionary<string, IntPtr> windows = new ();
+        private readonly Dictionary<string, IntPtr> windows = new();
         public readonly Action<string, IntPtr> SelectedDisplayCallback;
 
         public DisplaySelectForm(Action<string, IntPtr> callback)

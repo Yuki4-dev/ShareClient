@@ -1,6 +1,7 @@
 ﻿using ShareClient;
 using ShareClient.Component;
 using ShareClient.Model;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -89,6 +90,7 @@ namespace ShareClientTest
     {
         public void Error(string message, Exception exception)
         {
+
         }
 
         public void Info(string message)

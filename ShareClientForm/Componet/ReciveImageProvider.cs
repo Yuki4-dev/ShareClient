@@ -1,7 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using ShareClient.Component;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.IO;
-using ShareClient.Component;
 
 namespace SharedClientForm.Component
 {
@@ -9,7 +9,7 @@ namespace SharedClientForm.Component
     {
         public int Capacity { get; set; } = 100;
 
-        private readonly ConcurrentQueue<Image> imgQueue = new ();
+        private readonly ConcurrentQueue<Image> imgQueue = new();
 
         public ReciveImageProvider() { }
 

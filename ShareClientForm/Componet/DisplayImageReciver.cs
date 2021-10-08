@@ -1,6 +1,6 @@
-﻿using System;
-using ShareClient.Component;
+﻿using ShareClient.Component;
 using ShareClient.Model;
+using System;
 
 namespace SharedClientForm.Component
 {
@@ -9,7 +9,7 @@ namespace SharedClientForm.Component
         private readonly System.Timers.Timer _ReciverTimer = new();
         private readonly ReciveImageProvider _ReciveImageProvider = new();
 
-        public ShareClientManager ClientManager { get; }
+        public CollectionDataShareClientManager ClientManager { get; }
         public ShareClientReceiver Reciver { get; }
         public IPictureArea Area { get; }
 

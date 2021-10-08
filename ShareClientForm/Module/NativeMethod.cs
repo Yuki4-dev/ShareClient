@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace SharedClientForm
 {
-    class NativeMethod
+    internal class NativeMethod
     {
         public const int SRCCOPY = 13369376;
         public const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
@@ -14,7 +12,7 @@ namespace SharedClientForm
         public static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
 
         [DllImport("User32.dll")]
-        public extern static bool PrintWindow(IntPtr hwnd, IntPtr hDC, uint nFlags);
+        public static extern bool PrintWindow(IntPtr hwnd, IntPtr hDC, uint nFlags);
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetWindowDC(IntPtr hwnd);

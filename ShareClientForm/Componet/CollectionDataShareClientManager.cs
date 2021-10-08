@@ -1,11 +1,14 @@
 ﻿using ShareClient.Model;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Threading;
 
 namespace ShareClient.Component
 {
-    public class ShareClientManager : IClientManeger
+    public class CollectionDataShareClientManager : IClientManeger
     {
         private readonly SemaphoreSlim _Semaphore = new(1);
         private readonly List<int> _SendDataSize = new();
@@ -16,7 +19,7 @@ namespace ShareClient.Component
         public int DataSizeCapacity { get; set; } = 1000;
         public IShareClientLogger Logger { get; private set; } = new DebugLogger();
 
-        public ShareClientManager(ShareClientSpec clientSpec)
+        public CollectionDataShareClientManager(ShareClientSpec clientSpec)
         {
             ClientSpec = clientSpec;
         }
@@ -102,6 +105,29 @@ namespace ShareClient.Component
             }
 
             Logger = logger;
+        }
+    }
+
+    internal class DebugLogger : IShareClientLogger
+    {
+        public void Error(string message, Exception exception)
+        {
+            Debug.WriteLine(message);
+        }
+
+        public void Info(string message)
+        {
+            Debug.WriteLine(message);
+        }
+
+        public void Receive(EndPoint iPEndPoint, byte[] receiveData)
+        {
+            Debug.WriteLine($"Receive -> {iPEndPoint.ToString()}");
+        }
+
+        public void Send(EndPoint iPEndPoint, byte[] sendData)
+        {
+            Debug.WriteLine($"Send -> {iPEndPoint.ToString()}");
         }
     }
 }

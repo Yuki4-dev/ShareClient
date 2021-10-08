@@ -1,8 +1,8 @@
-﻿using System;
+﻿using ShareClient.Component;
+using ShareClient.Model;
+using System;
 using System.Drawing.Imaging;
 using System.IO;
-using ShareClient.Component;
-using ShareClient.Model;
 
 namespace SharedClientForm.Component
 {
@@ -14,11 +14,11 @@ namespace SharedClientForm.Component
 
         public ImageFormat Format { get; set; } = ImageFormat.Jpeg;
         public ShareClientSender Sender { get; }
-        public ShareClientManager ClientManager { get; }
+        public CollectionDataShareClientManager ClientManager { get; }
 
         public DisplayImageSender(Connection connection, DisplayImageCaputure caputure, int interval)
         {
-            ClientManager = new ShareClientManager(connection.ClientSpec);
+            ClientManager = new CollectionDataShareClientManager(connection.ClientSpec);
 
             var socket = ShareClientSocket.CreateUdpSocket();
             socket.Open(connection);

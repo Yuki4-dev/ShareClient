@@ -1,16 +1,15 @@
-﻿using System;
+﻿using ShareClient.Component;
+using ShareClient.Model;
+using SharedClientForm;
+using SharedClientForm.Component;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ShareClient.Component;
-using ShareClient.Model;
-using SharedClientForm;
-using SharedClientForm.Component;
 
 namespace SharedDisplayForm
 {

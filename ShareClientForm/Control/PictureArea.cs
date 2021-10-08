@@ -3,9 +3,9 @@ using System.Windows.Forms;
 
 namespace SharedClientForm
 {
-    class PictureArea : Control, IPictureArea
+    internal class PictureArea : Control, IPictureArea
     {
-        protected readonly PictureBox _MainPicture = new ();
+        protected readonly PictureBox _MainPicture = new();
 
         public Image DefaultPicture { get; set; }
 
