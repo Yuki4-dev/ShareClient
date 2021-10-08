@@ -2,7 +2,7 @@
 
 namespace ShareClient.Component
 {
-    public interface IClientManeger
+    public interface IClientManager
     {
         public ShareClientSpec ClientSpec { get; }
         public int RetryCount { get; }

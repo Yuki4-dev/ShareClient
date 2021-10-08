@@ -7,6 +7,6 @@ namespace ShareClient.Component
         public event EventHandler ShareClientClosed;
         public void Close();
         public IClientSocket Socket { get; }
-        public IClientManeger ClientManager { get; }
+        public IClientManager ClientManager { get; }
     }
 }

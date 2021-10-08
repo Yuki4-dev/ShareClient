@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ShareClientTest
 {
-    internal class MockClientManager : IClientManeger
+    internal class MockClientManager : IClientManager
     {
         public int RetryCount { get; set; } = 2;
         public List<int> SendDataSize { get; } = new();

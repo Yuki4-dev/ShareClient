@@ -16,9 +16,9 @@ namespace ShareClient.Component
         public event EventHandler ShareClientClosed;
 
         public IClientSocket Socket { get; }
-        public IClientManeger ClientManager { get; }
+        public IClientManager ClientManager { get; }
 
-        public ShareClientSender(IClientManeger maneger, IClientSocket client)
+        public ShareClientSender(IClientManager maneger, IClientSocket client)
         {
             ClientManager = maneger;
             Socket = client;

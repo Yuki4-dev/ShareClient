@@ -3,7 +3,7 @@ using System;
 
 namespace ShareClient.Component
 {
-    public class ShareClientManeger : IClientManeger
+    public class ShareClientManager : IClientManager
     {
         public ShareClientSpec ClientSpec { get; }
         public int RetryCount { get; set; } = 2;
@@ -12,7 +12,7 @@ namespace ShareClient.Component
         public event Func<int, bool> SendDataSize;
         public event Action<int> RecieveDataSize;
 
-        public ShareClientManeger(ShareClientSpec clientSpec)
+        public ShareClientManager(ShareClientSpec clientSpec)
         {
             ClientSpec = clientSpec;
         }

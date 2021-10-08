@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace ShareClient.Component
 {
-    public class CollectionDataShareClientManager : IClientManeger
+    public class CollectionDataShareClientManager : IClientManager
     {
         private readonly SemaphoreSlim _Semaphore = new(1);
         private readonly List<int> _SendDataSize = new();
