@@ -24,22 +24,12 @@ namespace ShareClient.Component
 
         public virtual bool PreSendDataSize(int size)
         {
-            if (SendDataSize == null)
-            {
-                return true;
-            }
-
-            return SendDataSize.Invoke(size);
+            return SendDataSize?.Invoke(size) ?? true;
         }
 
         public virtual void SetRecieveDataSize(int size)
         {
-            if (RecieveDataSize == null)
-            {
-                return;
-            }
-
-            RecieveDataSize.Invoke(size);
+            RecieveDataSize?.Invoke(size);
         }
     }
 }
