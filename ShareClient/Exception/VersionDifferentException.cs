@@ -2,7 +2,7 @@
 
 namespace ShareClient
 {
-    public class VersionDifferentException : ShareClientException
+    public class VersionDifferentException : Exception
     {
         public string ObjectName { get; }
         public int ThisVersion { get; }

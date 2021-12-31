@@ -19,7 +19,7 @@ namespace ShareClient.Component
         {
             if (IsOpen)
             {
-                throw new ShareClientSocketException("Client is Open.");
+                throw new SocketException(IsOpen, "Client is Open.", null);
             }
             _Connection = connection;
 
@@ -31,7 +31,7 @@ namespace ShareClient.Component
             }
             catch (Exception ex)
             {
-                throw new ShareClientSocketException("Open Failure : " + ex.Message, ex);
+                throw new SocketException(IsOpen, "Open Failure : " + ex.Message, ex);
             }
         }
 
@@ -60,7 +60,7 @@ namespace ShareClient.Component
                 }
                 else
                 {
-                    throw new ShareClientSocketException("Receive Failure : " + ex.Message, ex);
+                    throw new SocketException(IsOpen, "Receive Failure : " + ex.Message, ex);
                 }
             }
 
@@ -83,7 +83,7 @@ namespace ShareClient.Component
                 }
                 else
                 {
-                    throw new ShareClientSocketException("Send Failure : " + ex.Message, ex);
+                    throw new SocketException(IsOpen, "Send Failure : " + ex.Message, ex);
                 }
             }
         }
@@ -92,7 +92,7 @@ namespace ShareClient.Component
         {
             if (!IsOpen)
             {
-                throw new ShareClientSocketException("Client is Not Open.");
+                throw new SocketException(IsOpen, "Client is Not Open.", null);
             }
         }
 

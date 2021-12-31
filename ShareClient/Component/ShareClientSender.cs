@@ -100,17 +100,17 @@ namespace ShareClient.Component
                     Thread.Sleep(1);
                     break;
                 }
-                catch (ShareClientSocketException ex)
+                catch (Exception ex)
                 {
                     ClientManager.Logger.Error($"Sokect Send Throw Exception, Socket IsOpen : {Socket.IsOpen}", ex);
                     if (Socket.IsOpen)
                     {
-                        ClientManager.Logger.Error($"Exception Throw Count : {count + 1 }, RetryCount: {ClientManager.RetryCount}", null);
+                        ClientManager.Logger.Error($"Exception Throw Count : {count + 1 }, RetryCount: {ClientManager.RetryCount}", ex);
                         if (++count > ClientManager.RetryCount || ClientManager.HandleException(ex))
                         {
-                            ClientManager.Logger.Error($"Throw Exception.", ex);
-                            ex.Header = clientData.Header;
-                            throw;
+                            var se = new ShareClientException(clientData.Header, ex.Message, ex);
+                            ClientManager.Logger.Error($"Throw Exception.", se);
+                            throw se;
                         }
                     }
                 }

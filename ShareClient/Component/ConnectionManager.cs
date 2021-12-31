@@ -12,7 +12,7 @@ namespace ShareClient.Component
         private UdpClient _Client;
         private IShareClientLogger logger = new DebugLogger();
 
-        public bool IsConnect { get; private set; } = false;
+        public bool IsConnecting { get; private set; } = false;
 
         public int ConnectionDelay { get; set; } = 100;
 
@@ -27,13 +27,13 @@ namespace ShareClient.Component
         {
             logger.Info($"Start Connect. -> {endPoint.Address} : {endPoint.Port}");
 
-            if (IsConnect)
+            if (IsConnecting)
             {
                 var ex = new InvalidOperationException($"ConnectAsync Already Run Another Connect Process. -> {endPoint.Address} : {endPoint.Port}");
                 logger.Error(ex.Message, ex);
                 throw ex;
             }
-            IsConnect = true;
+            IsConnecting = true;
 
             return await Connect(endPoint, connectionData, responseAccept);
         }
@@ -48,9 +48,9 @@ namespace ShareClient.Component
             }
             catch (Exception ex)
             {
-                if (IsConnect)
+                if (IsConnecting)
                 {
-                    var sce = new ShareClientException($"Fail Connect. {ex.Message} -> {endPoint.Address} : {endPoint.Port}", ex);
+                    var sce = new ConnectionException(endPoint, $"Fail Connect. {ex.Message} -> {endPoint.Address} : {endPoint.Port}", ex);
                     logger.Error(sce.Message, sce);
                     throw sce;
                 }
@@ -58,7 +58,7 @@ namespace ShareClient.Component
             }
             finally
             {
-                IsConnect = false;
+                IsConnecting = false;
                 _Client?.Dispose();
             }
         }
@@ -87,7 +87,7 @@ namespace ShareClient.Component
                 result = new(response.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, (IPEndPoint)_Client.Client.RemoteEndPoint);
             }
 
-            IsConnect = false;
+            IsConnecting = false;
             return result;
         }
 
@@ -106,13 +106,13 @@ namespace ShareClient.Component
         {
             logger.Info($"Start Accept. -> {endPoint.Address} : {endPoint.Port}");
 
-            if (IsConnect)
+            if (IsConnecting)
             {
                 var ex = new InvalidOperationException($"AcceptAsync Already Run Another Connect Process. -> {endPoint.Address} : {endPoint.Port}");
                 logger.Error(ex.Message, ex);
                 throw ex;
             }
-            IsConnect = true;
+            IsConnecting = true;
 
             return await Accept(endPoint, requestAccept);
         }
@@ -126,9 +126,9 @@ namespace ShareClient.Component
             }
             catch (Exception ex)
             {
-                if (IsConnect)
+                if (IsConnecting)
                 {
-                    var se = new ShareClientException($"Fail Accept. {ex.Message} -> {endPoint.Address} : {endPoint.Port}", ex);
+                    var se = new ConnectionException(endPoint, $"Fail Accept. {ex.Message} -> {endPoint.Address} : {endPoint.Port}", ex);
                     logger.Error(se.Message, se);
                     throw se;
                 }
@@ -136,7 +136,7 @@ namespace ShareClient.Component
             }
             finally
             {
-                IsConnect = false;
+                IsConnecting = false;
                 _Client?.Dispose();
             }
         }
@@ -170,7 +170,7 @@ namespace ShareClient.Component
 
             if (result.IsConnect)
             {
-                IsConnect = false;
+                IsConnecting = false;
                 logger.Info($"Accept Succes. -> {receiveEp.Address} : {receiveEp.Port}");
                 return new(result.ConnectionData.CleintSpec, (IPEndPoint)_Client.Client.LocalEndPoint, receiveEp);
             }
@@ -189,7 +189,7 @@ namespace ShareClient.Component
             return await Task.Run(() =>
            {
                Connection con = null;
-               while (IsConnect)
+               while (IsConnecting)
                {
                    logger.Info($"Run Wait Procces.");
                    con = work.Invoke();
@@ -203,18 +203,13 @@ namespace ShareClient.Component
 
         public void SetLogger(IShareClientLogger logger)
         {
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-
-            this.logger = logger;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public void Cancel()
         {
             logger.Info($"Cancel.");
-            IsConnect = false;
+            IsConnecting = false;
             _Client?.Dispose();
         }
 

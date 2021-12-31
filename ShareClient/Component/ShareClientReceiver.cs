@@ -31,16 +31,17 @@ namespace ShareClient.Component
                 {
                     await ReceiveData();
                 }
-                catch (ShareClientException ex)
+                catch (Exception ex)
                 {
                     ClientManager.Logger.Error($"Sokect Receive Throw Exception, Socket IsOpen : {Socket.IsOpen}", ex);
                     if (Socket.IsOpen)
                     {
-                        ClientManager.Logger.Error($"Exception Throw Count : {count + 1 }, RetryCount: {ClientManager.RetryCount}", null);
+                        ClientManager.Logger.Error($"Exception Throw Count : {count + 1 }, RetryCount: {ClientManager.RetryCount}", ex);
                         if (++count > ClientManager.RetryCount || ClientManager.HandleException(ex))
                         {
-                            ClientManager.Logger.Error($"Throw Exception.", ex);
-                            throw;
+                            var se = ex is ShareClientException ? (ShareClientException)ex : new ShareClientException(null, ex.Message, ex);
+                            ClientManager.Logger.Error($"Throw Exception.", se);
+                            throw se;
                         }
                     }
                 }

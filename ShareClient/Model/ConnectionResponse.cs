@@ -25,7 +25,7 @@ namespace ShareClient.Model
 
         public static ConnectionResponse FromByte(byte[] bytes)
         {
-            var connection = ConnectionData.FromByte(bytes.AsSpan().Slice(1).ToArray());
+            var connection = ConnectionData.FromByte(bytes.AsSpan()[1..].ToArray());
             return connection != null ? new ConnectionResponse(bytes[0] == 1, connection) : null;
         }
     }

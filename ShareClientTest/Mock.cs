@@ -1,5 +1,4 @@
-﻿using ShareClient;
-using ShareClient.Component;
+﻿using ShareClient.Component;
 using ShareClient.Model;
 using System;
 using System.Collections.Generic;
@@ -20,7 +19,7 @@ namespace ShareClientTest
         {
         }
 
-        public bool HandleException(ShareClientException ex)
+        public bool HandleException(Exception ex)
         {
             return true;
         }

@@ -7,7 +7,7 @@ namespace ShareClient.Component
 {
     public interface IConnectionManager : IDisposable
     {
-        public bool IsConnect { get; }
+        public bool IsConnecting { get; }
         public int ConnectionDelay { get; set; }
         public void SetLogger(IShareClientLogger logger);
         public Task<Connection> ConnectAsync(IPEndPoint endPoint, ConnectionData connectionData);

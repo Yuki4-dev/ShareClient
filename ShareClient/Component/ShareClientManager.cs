@@ -17,7 +17,7 @@ namespace ShareClient.Component
             ClientSpec = clientSpec;
         }
 
-        public virtual bool HandleException(ShareClientException ex)
+        public virtual bool HandleException(Exception ex)
         {
             return false;
         }

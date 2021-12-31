@@ -1,12 +1,15 @@
-﻿using System;
+﻿using ShareClient.Model;
+using System;
 
 namespace ShareClient
 {
     [Serializable()]
     public class ShareClientException : Exception
     {
-        public ShareClientException() : base() { }
-        public ShareClientException(string msg) : base(msg) { }
-        public ShareClientException(string msg, Exception inner) : base(msg, inner) { }
+        public ShareClientHeader Header { get; }
+        public ShareClientException(ShareClientHeader header, string msg, Exception inner) : base(msg, inner)
+        {
+            Header = header;
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace ShareClient.Component
             ClientSpec = clientSpec;
         }
 
-        public virtual bool HandleException(ShareClientException ex)
+        public virtual bool HandleException(Exception ex)
         {
             return false;
         }
@@ -99,12 +99,7 @@ namespace ShareClient.Component
 
         public void SetLogger(IShareClientLogger logger)
         {
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-
-            Logger = logger;
+            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
     }
 
@@ -122,12 +117,12 @@ namespace ShareClient.Component
 
         public void Receive(EndPoint iPEndPoint, byte[] receiveData)
         {
-            Debug.WriteLine($"Receive -> {iPEndPoint.ToString()}");
+            Debug.WriteLine($"Receive -> {iPEndPoint}");
         }
 
         public void Send(EndPoint iPEndPoint, byte[] sendData)
         {
-            Debug.WriteLine($"Send -> {iPEndPoint.ToString()}");
+            Debug.WriteLine($"Send -> {iPEndPoint}");
         }
     }
 }
