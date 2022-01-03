@@ -161,7 +161,7 @@ namespace ShareClient.Component
             try
             {
                 StopApplicationData = true;
-                SendShareClientData(new(ShareClientHeader.CreateClose()));
+                SendShareClientData(new ShareClientData(ShareClientHeader.CreateClose()));
             }
             catch (Exception ex)
             {

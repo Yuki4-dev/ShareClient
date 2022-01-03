@@ -64,11 +64,11 @@ namespace ShareClientTest
         {
         }
 
-        public void Open(Connection connection)
+        public void Close()
         {
         }
 
-        public void Close()
+        public void Open(IPEndPoint local, IPEndPoint remote)
         {
         }
     }

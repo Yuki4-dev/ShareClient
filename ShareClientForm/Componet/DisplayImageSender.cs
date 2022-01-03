@@ -1,5 +1,4 @@
 ﻿using ShareClient.Component;
-using ShareClient.Model;
 using System;
 using System.Drawing.Imaging;
 using System.IO;
@@ -20,8 +19,8 @@ namespace SharedClientForm.Component
         {
             ClientManager = new CollectionDataShareClientManager(connection.ClientSpec);
 
-            var socket = ShareClientSocket.CreateUdpSocket();
-            socket.Open(connection);
+            var socket = ShareClientSocket.Udp;
+            socket.Open(connection.LocalEndPoint, connection.RemoteEndPoint);
             Sender = new ShareClientSender(ClientManager, socket);
 
             _Caputure = caputure;

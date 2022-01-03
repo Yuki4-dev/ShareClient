@@ -1,5 +1,4 @@
 ﻿using ShareClient.Component;
-using ShareClient.Model;
 using System;
 
 namespace SharedClientForm.Component
@@ -17,8 +16,8 @@ namespace SharedClientForm.Component
         {
             ClientManager = new(connection.ClientSpec);
 
-            var socket = ShareClientSocket.CreateUdpSocket();
-            socket.Open(connection);
+            var socket = ShareClientSocket.Udp;
+            socket.Open(connection.LocalEndPoint, connection.RemoteEndPoint);
             Reciver = new(ClientManager, socket, _ReciveImageProvider);
 
             Area = area;
