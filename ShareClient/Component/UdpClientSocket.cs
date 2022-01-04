@@ -8,6 +8,7 @@ namespace ShareClient.Component
     internal class UdpClientSocket : IClientSocket
     {
         private UdpClient _UdpClient;
+        private IPEndPoint _Remote;
 
         public bool IsOpen { get; private set; }
 
@@ -19,6 +20,7 @@ namespace ShareClient.Component
             {
                 throw new SocketException(IsOpen, "Client is Open.", null);
             }
+            _Remote = remote;
 
             try
             {
@@ -43,7 +45,11 @@ namespace ShareClient.Component
             try
             {
                 IPEndPoint receiveEp = null;
-                return _UdpClient.Receive(ref receiveEp);
+                var recieveData = _UdpClient.Receive(ref receiveEp);
+                if (_Remote.Equals(receiveEp))
+                {
+                    return recieveData;
+                }
             }
             catch (Exception ex)
             {
