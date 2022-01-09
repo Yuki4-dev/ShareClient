@@ -19,6 +19,8 @@ namespace ShareClient.Component.Algorithm
         private readonly IShareAlgorithmManager _Manager;
         private readonly IShareClientSocket _Socket;
 
+        public bool IsClosed { get; private set; } = false;
+
         public event EventHandler ShareAlgorithmClosed;
 
         public InternalSendAlgorithm(ShareClientSpec clientSpec, IShareAlgorithmManager maneger, IShareClientSocket socket)
@@ -30,6 +32,8 @@ namespace ShareClient.Component.Algorithm
 
         public void Send(byte[] data)
         {
+            CheckIfClosed();
+
             if (!_ClientSpec.SendSameData)
             {
                 var hash = _HashAlgorithm.ComputeHash(data);
@@ -156,12 +160,13 @@ namespace ShareClient.Component.Algorithm
 
         public void Close()
         {
-            if (!_Socket.IsOpen)
+            if (IsClosed)
             {
-                _Manager.Logger.Info("Socket is Not Open.");
+                _Manager.Logger.Info("Send Algorithm Already Closed.");
                 return;
             }
 
+            IsClosed = true;
             try
             {
                 stopApplicationData = true;
@@ -169,13 +174,27 @@ namespace ShareClient.Component.Algorithm
             }
             catch (Exception ex)
             {
-                _Manager.Logger.Error("Fail Close.", ex);
+                _Manager.Logger.Error("Fail Send Close Message.", ex);
             }
-            finally
+
+            try
             {
                 _Socket.Dispose();
                 ShareAlgorithmClosed?.Invoke(this, new());
-                _Manager.Logger.Info("SendAlgorithm Socket Close.");
+            }
+            catch(Exception ex)
+            {
+                _Manager.Logger.Error("Fail Close.", ex);
+            }
+
+            _Manager.Logger.Info("SendAlgorithm Socket Close.");
+        }
+
+        private void CheckIfClosed()
+        {
+            if (IsClosed || !_Socket.IsOpen)
+            {
+                throw new ShareClientException(null, "Send Algolithm is Closed.", null);
             }
         }
     }

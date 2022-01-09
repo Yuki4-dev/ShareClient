@@ -14,6 +14,8 @@ namespace ShareClient.Component.Algorithm
         private readonly IShareAlgorithmManager _Manager;
         private readonly IShareClientSocket _Socket;
 
+        public bool IsClosed { get; private set; } = false;
+
         public event EventHandler ShareAlgorithmClosed;
 
         public InternalRecieveAlgorithm(ShareClientSpec clientSpec, IShareAlgorithmManager manager, IShareClientSocket socket)
@@ -25,6 +27,8 @@ namespace ShareClient.Component.Algorithm
 
         public async Task RecieveAsync(Action<byte[]> reciever)
         {
+            CheckIfClosed();
+
             int count = 0;
             while (_Socket.IsOpen)
             {
@@ -40,6 +44,7 @@ namespace ShareClient.Component.Algorithm
                         _Manager.Logger.Error($"Exception Throw Count : {count + 1 }, RetryCount: {_Manager.RetryCount}", ex);
                         if (++count > _Manager.RetryCount || _Manager.HandleException(ex))
                         {
+
                             var se = ex is ShareClientException ? (ShareClientException)ex : new ShareClientException(null, ex.Message, ex);
                             _Manager.Logger.Error($"Throw Exception.", se);
                             throw se;
@@ -132,16 +137,34 @@ namespace ShareClient.Component.Algorithm
 
         public void Close()
         {
-            if (!_Socket.IsOpen)
+            if (IsClosed)
             {
-                _Manager.Logger.Info("Socket is Not Open.");
+                _Manager.Logger.Info("Receive Algorithm Already Closed.");
                 return;
             }
 
-            _Socket.Dispose();
+            IsClosed = true;
             _SplitBuffer.Clear();
-            ShareAlgorithmClosed?.Invoke(this, new());
-            _Manager.Logger.Info("Receiver Socket Close.");
+
+            try
+            {
+                _Socket.Dispose();
+                ShareAlgorithmClosed?.Invoke(this, new());
+            }
+            catch (Exception ex)
+            {
+                _Manager.Logger.Info($"Close Fail : {ex.Message}");
+            }
+
+            _Manager.Logger.Info("Receive Algorithm Closed.");
+        }
+
+        private void CheckIfClosed()
+        {
+            if (IsClosed || !_Socket.IsOpen)
+            {
+                throw new ShareClientException(null, "Recieve Algolithm is Closed.", null);
+            }
         }
     }
 }
