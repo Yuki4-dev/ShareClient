@@ -1,7 +1,9 @@
-﻿using System;
+﻿using ShareClient.Model;
+using ShareClient.Model.ShareClient;
+using System;
 using System.Linq;
 
-namespace ShareClient.Model
+namespace ShareClient.Component.ShareClient.Internal
 {
     public class SplitConnectFactory
     {

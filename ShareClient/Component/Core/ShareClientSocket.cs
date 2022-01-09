@@ -1,7 +1,8 @@
-﻿using System.Net;
+﻿using ShareClient.Component.Connect;
+using System.Net;
 using System.Threading.Tasks;
 
-namespace ShareClient.Component
+namespace ShareClient.Component.Core
 {
     public abstract class ShareClientSocket : IClientSocket
     {
@@ -10,7 +11,6 @@ namespace ShareClient.Component
         public abstract bool IsOpen { get; }
         public abstract Task<byte[]> ReceiveAsync();
         public abstract void Send(byte[] sendData);
-        public abstract void Open(Connection connection);
         public abstract void Close();
         public abstract void Dispose();
         public abstract void Open(IPEndPoint local, IPEndPoint remote);

@@ -1,7 +1,8 @@
 ﻿using ShareClient.Model;
+using ShareClient.Model.ShareClient;
 using System;
 
-namespace ShareClient.Component
+namespace ShareClient.Component.ShareClient.Internal
 {
     public class ShareClientManager : IClientManager
     {

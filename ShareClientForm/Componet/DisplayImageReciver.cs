@@ -1,4 +1,7 @@
 ﻿using ShareClient.Component;
+using ShareClient.Component.Connect;
+using ShareClient.Component.Core;
+using ShareClient.Component.ShareClient;
 using System;
 
 namespace SharedClientForm.Component
@@ -14,7 +17,7 @@ namespace SharedClientForm.Component
 
         public DisplayImageReciver(Connection connection, int interval, IPictureArea area)
         {
-            ClientManager = new(connection.ClientSpec);
+            ClientManager = new CollectionDataShareClientManager(connection.ClientSpec);
 
             var socket = ShareClientSocket.Udp;
             socket.Open(connection.LocalEndPoint, connection.RemoteEndPoint);

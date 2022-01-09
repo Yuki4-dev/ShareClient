@@ -1,8 +1,9 @@
-﻿using System;
+﻿using ShareClient.Model;
+using System;
 using System.Diagnostics;
 using System.Net;
 
-namespace ShareClient.Model
+namespace ShareClient.Component.ShareClient.Internal
 {
     internal class DebugLogger : IShareClientLogger
     {

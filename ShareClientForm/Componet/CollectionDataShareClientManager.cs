@@ -1,4 +1,5 @@
 ﻿using ShareClient.Model;
+using ShareClient.Model.ShareClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

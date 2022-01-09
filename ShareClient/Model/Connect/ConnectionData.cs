@@ -1,17 +1,16 @@
-﻿using System;
+﻿using ShareClient.Model.ShareClient;
+using System;
 
-namespace ShareClient.Model
+namespace ShareClient.Model.Connect
 {
     public class ConnectionData : IClientData
     {
         public int Size => CleintSpec.Size + MetaData.Length;
-        public int Version => 0;
+        public int Version => 1;
         public ShareClientSpec CleintSpec { get; }
         public byte[] MetaData { get; }
 
-        public ConnectionData(ShareClientSpec spec) : this(spec, Array.Empty<byte>())
-        {
-        }
+        public ConnectionData(ShareClientSpec spec) : this(spec, Array.Empty<byte>()) { }
 
         public ConnectionData(ShareClientSpec spec, byte[] meta)
         {

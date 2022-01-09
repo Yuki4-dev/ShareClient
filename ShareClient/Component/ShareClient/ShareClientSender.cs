@@ -1,9 +1,10 @@
 ﻿using ShareClient.Model;
+using ShareClient.Model.ShareClient;
 using System;
 using System.Security.Cryptography;
 using System.Threading;
 
-namespace ShareClient.Component
+namespace ShareClient.Component.ShareClient
 {
     public class ShareClientSender : IShareClient
     {

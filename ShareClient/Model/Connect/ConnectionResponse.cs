@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ShareClient.Model
+namespace ShareClient.Model.Connect
 {
     public class ConnectionResponse : IClientData
     {
         public int Size => ConnectionData.Size + 1;
-        public int Version => 0;
+        public int Version => 1;
         public bool IsConnect { get; }
         public ConnectionData ConnectionData { get; }
 

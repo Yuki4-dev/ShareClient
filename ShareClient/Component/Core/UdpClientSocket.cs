@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace ShareClient.Component
+namespace ShareClient.Component.Core
 {
     internal class UdpClientSocket : IClientSocket
     {

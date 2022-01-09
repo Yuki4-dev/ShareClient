@@ -1,5 +1,8 @@
 ﻿using ShareClient.Component;
+using ShareClient.Component.Connect;
 using ShareClient.Model;
+using ShareClient.Model.Connect;
+using ShareClient.Model.ShareClient;
 using SharedClientForm;
 using SharedClientForm.Component;
 using System;
@@ -18,7 +21,6 @@ namespace SharedDisplayForm
         private readonly ImageFormat[] Formats = new ImageFormat[] { ImageFormat.Jpeg, ImageFormat.Png, ImageFormat.Gif };
         private readonly SemaphoreSlim _Semaphore = new SemaphoreSlim(1);
         private readonly SettingForm _SettingForm = new SettingForm();
-        private readonly IConnectionManager _ClientConnection = new ConnectionManager();
         private DisplayImageReciver _Receiver;
         private DisplayImageSender _Sender;
 
@@ -26,8 +28,6 @@ namespace SharedDisplayForm
         private readonly Parameter _SendParam;
         private readonly System.Windows.Forms.Timer _SendByteTimer = new System.Windows.Forms.Timer();
         private readonly System.Windows.Forms.Timer _ReciveByteTimer = new System.Windows.Forms.Timer();
-
-        private delegate ConnectionResponse DelegateConnect();
 
         public SharedClientMainForm()
         {
@@ -56,8 +56,6 @@ namespace SharedDisplayForm
             _ReciveByteTimer.Interval = 1000;
             _ReciveByteTimer.Tick += ReciveByteTimer_Tick;
             _ReciveByteTimer.Start();
-
-            _ClientConnection = new ConnectionManager();
 
             Activated += SharedDisplayForm_Activated;
             FormClosing += (s, e) =>
@@ -147,10 +145,10 @@ namespace SharedDisplayForm
             bool throwEx = false;
             try
             {
-                var iPEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
                 var spec = new ShareClientSpec();
-
-                connection = await _ClientConnection.ConnectAsync(iPEndPoint, new ConnectionData(spec, GetMeta()));
+                var iPEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
+                connection = await Task.Run(() => Connection.Builder()
+                                                            .Connect(iPEndPoint, new ConnectionData(spec, GetMeta())));
             }
             catch (Exception ex)
             {
@@ -224,7 +222,9 @@ namespace SharedDisplayForm
                 try
                 {
                     var iPEndPoint = new IPEndPoint(IPAddress.Any, port);
-                    connection = await _ClientConnection.AcceptAsync(iPEndPoint, AcceptCallback);
+                    connection = await Task.Run(() => Connection.Builder()
+                                                     .SetAcceptRequest(AcceptCallback)
+                                                     .Accept(iPEndPoint));
                 }
                 catch (Exception ex)
                 {
@@ -245,17 +245,19 @@ namespace SharedDisplayForm
             }
         }
 
-        private ConnectionResponse AcceptCallback(IPEndPoint iPEndPoint, ConnectionData connection)
+        private ConnectionResponse AcceptCallback(IPEndPoint iPEndPoint, ConnectionData connectionData)
         {
-            return (ConnectionResponse)Invoke(new DelegateConnect(() =>
+            if(InvokeRequired)
             {
-                bool result = false;
-                var c = new ConnectForm(iPEndPoint, connection);
-                c.ConnectCallback = () => result = true;
-                c.ShowDialog(this);
+                return Invoke(() => AcceptCallback(iPEndPoint, connectionData));
+            }
 
-                return new ConnectionResponse(result, connection);
-            }));
+            bool result = false;
+            var c = new ConnectForm(iPEndPoint, connectionData);
+            c.ConnectCallback = () => result = true;
+            c.ShowDialog(this);
+
+            return new ConnectionResponse(result, connectionData);
         }
 
         private async void PushMessage(string msg)
@@ -290,7 +292,6 @@ namespace SharedDisplayForm
 
         private void Stop()
         {
-            _ClientConnection.Cancel();
             _Sender?.Dispose();
             _Receiver?.Dispose();
         }

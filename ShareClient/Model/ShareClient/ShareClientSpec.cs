@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ShareClient.Model
+namespace ShareClient.Model.ShareClient
 {
     public class ShareClientSpec : IClientData
     {

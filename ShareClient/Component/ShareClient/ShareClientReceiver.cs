@@ -1,9 +1,11 @@
-﻿using ShareClient.Model;
+﻿using ShareClient.Component.ShareClient.Internal;
+using ShareClient.Model;
+using ShareClient.Model.ShareClient;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ShareClient.Component
+namespace ShareClient.Component.ShareClient
 {
     public class ShareClientReceiver : IShareClient
     {

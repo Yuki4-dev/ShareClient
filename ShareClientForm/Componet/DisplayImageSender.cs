@@ -1,4 +1,7 @@
 ﻿using ShareClient.Component;
+using ShareClient.Component.Connect;
+using ShareClient.Component.Core;
+using ShareClient.Component.ShareClient;
 using System;
 using System.Drawing.Imaging;
 using System.IO;

@@ -1,4 +1,6 @@
-﻿namespace ShareClient.Model
+﻿using ShareClient.Model.ShareClient;
+
+namespace ShareClient.Model
 {
     public interface ISplitConnect
     {
