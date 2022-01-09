@@ -22,7 +22,7 @@ namespace SharedClientForm.Component
                                          DisplayImageCaputure caputure,
                                          int interval,
                                          ImageFormat format,
-                                         Action closing)
+                                         Action closed)
         {
             _Sender = ShareAlgorithmBuilder.NewBuilder()
                                            .SetShareClientSpec(connection.ClientSpec)
@@ -33,7 +33,7 @@ namespace SharedClientForm.Component
 
             _Caputure = caputure;
             _Format = format;
-            _Closing = closing;
+            _Closing = closed;
 
             _SenderTimer.Interval = interval;
             _SenderTimer.Elapsed += Send;

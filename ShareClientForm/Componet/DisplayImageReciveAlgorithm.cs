@@ -22,7 +22,7 @@ namespace SharedClientForm.Component
                                            IShareAlgorithmManager manager,
                                            int interval,
                                            IPictureArea area,
-                                           Action closing)
+                                           Action closed)
         {
             _Reciver = ShareAlgorithmBuilder.NewBuilder()
                                            .SetShareClientSpec(connection.ClientSpec)
@@ -32,7 +32,7 @@ namespace SharedClientForm.Component
             _Reciver.ShareAlgorithmClosed += Reciver_ShareAlgorithmClosed;
 
             _PictureArea = area;
-            _Closing = closing;
+            _Closing = closed;
             _ReciverTimer.Interval = interval;
             _ReciverTimer.Elapsed += PaintPicture;
         }
