@@ -30,6 +30,7 @@ namespace ShareClient.Component.Connect
 
         public class ConnectionBuilder
         {
+            private bool isCancellation = false;
             private Func<IConnectionSocket> _LaunchSocket;
             private IPEndPoint _LocalEndPoint;
             private IShareClientLogger _Logger = new DebugLogger();
@@ -86,9 +87,16 @@ namespace ShareClient.Component.Connect
                 {
                     connection = ConnectInternal(socket, connectEndPoint, connectionData);
                 }
-                catch (ObjectDisposedException ex)
+                catch (Exception ex)
                 {
-                    _Logger.Info($"Socket Closed. : {ex.Message}");
+                    if (isCancellation)
+                    {
+                        _Logger.Info($"Socket Closed. : {ex.Message}");
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
                 finally
                 {
@@ -153,9 +161,16 @@ namespace ShareClient.Component.Connect
                 {
                     connection = AcceptInternal(socket);
                 }
-                catch (ObjectDisposedException ex)
+                catch (Exception ex)
                 {
-                    _Logger.Info($"Socket Closed. : {ex.Message}");
+                    if(isCancellation)
+                    {
+                        _Logger.Info($"Socket Closed. : {ex.Message}");
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
                 finally
                 {
@@ -252,7 +267,8 @@ namespace ShareClient.Component.Connect
                     {
                         if (_IsCancellation.Invoke())
                         {
-                            socket.Close();
+                            isCancellation = true;
+                            socket.Dispose();
                             _Logger.Info("Request Cancel.");
                             break;
                         }
@@ -271,14 +287,7 @@ namespace ShareClient.Component.Connect
                 }
                 catch (Exception ex)
                 {
-                    if (ex is ObjectDisposedException)
-                    {
-                        throw;
-                    }
-                    else
-                    {
-                        Throw(remoteEndPoint, $"Fail Send. {ex.Message}", ex);
-                    }
+                    Throw(remoteEndPoint, $"Fail Send. {ex.Message}", ex);
                 }
 
                 _Logger.Send(remoteEndPoint, shareClientData.ToByte());
@@ -294,14 +303,7 @@ namespace ShareClient.Component.Connect
                 }
                 catch (Exception ex)
                 {
-                    if (ex is ObjectDisposedException)
-                    {
-                        throw;
-                    }
-                    else
-                    {
-                        Throw(_LocalEndPoint, $"Fail Recive. {ex.Message}", ex);
-                    }
+                    Throw(_LocalEndPoint, $"Fail Recive. {ex.Message}", ex);
                 }
 
                 return recieveData;

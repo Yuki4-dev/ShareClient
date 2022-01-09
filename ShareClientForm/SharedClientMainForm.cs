@@ -21,6 +21,8 @@ namespace SharedDisplayForm
         private readonly SettingForm _SettingForm = new SettingForm();
         private DisplayImageReciver _Receiver;
         private DisplayImageSender _Sender;
+        private bool isCancelAccept = false;
+        private bool isCancelConnect = false;
 
         private readonly Parameter _ReciveParam;
         private readonly Parameter _SendParam;
@@ -90,7 +92,7 @@ namespace SharedDisplayForm
 
         private void SendByteTimer_Tick(object sender, EventArgs e)
         {
-            if (this._Sender == null)
+            if (_Sender == null)
             {
                 return;
             }
@@ -104,7 +106,7 @@ namespace SharedDisplayForm
             {
             }
             SetSpeed(size, _SendParam);
-            this._Sender.ClientManager.SendDataSizeClear();
+            _Sender.ClientManager.SendDataSizeClear();
         }
 
         private void SetSpeed(int size, Parameter parameter)
@@ -143,10 +145,11 @@ namespace SharedDisplayForm
             bool throwEx = false;
             try
             {
-                var spec = new ShareClientSpec();
+                isCancelConnect = false;
                 var iPEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
                 connection = await Task.Run(() => Connection.Builder()
-                                                            .Connect(iPEndPoint, new ConnectionData(spec, GetMeta())));
+                                                            .SetCancellation(() => isCancelConnect)
+                                                            .Connect(iPEndPoint, new ConnectionData(new ShareClientSpec(), GetMeta())));
             }
             catch (Exception ex)
             {
@@ -219,10 +222,12 @@ namespace SharedDisplayForm
 
                 try
                 {
+                    isCancelAccept = false;
                     var iPEndPoint = new IPEndPoint(IPAddress.Any, port);
                     connection = await Task.Run(() => Connection.Builder()
-                                                     .SetAcceptRequest(AcceptCallback)
-                                                     .Accept(iPEndPoint));
+                                                     　　　　　　.SetCancellation(() => isCancelAccept)
+                                                                .SetAcceptRequest(AcceptCallback)
+                                                                .Accept(iPEndPoint));
                 }
                 catch (Exception ex)
                 {
@@ -290,6 +295,8 @@ namespace SharedDisplayForm
 
         private void Stop()
         {
+            isCancelConnect = true;
+            isCancelAccept = true;
             _Sender?.Dispose();
             _Receiver?.Dispose();
         }

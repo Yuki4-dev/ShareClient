@@ -33,11 +33,6 @@ namespace ShareClient.Component.Connect.Internal
 
         public void Dispose()
         {
-            Close();
-        }
-
-        public void Close()
-        {
             try
             {
                 _UdpClient?.Dispose();

@@ -8,7 +8,6 @@ namespace ShareClient.Component.Connect
         IPEndPoint LocalEndPoint { get; }
         void Send(IPEndPoint remoteEndPoint, byte[] sendData);
         ConnectionSocketRecieveData Recieve();
-        public void Close();
     }
 
     public class ConnectionSocketRecieveData
