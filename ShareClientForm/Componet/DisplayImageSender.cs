@@ -1,10 +1,10 @@
 ﻿using ShareClient.Component;
+using ShareClient.Component.Algorithm;
 using ShareClient.Component.Connect;
-using ShareClient.Component.Core;
-using ShareClient.Component.ShareClient;
 using System;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Timers;
 
 namespace SharedClientForm.Component
 {
@@ -12,20 +12,19 @@ namespace SharedClientForm.Component
     {
         private bool isDispose = false;
         private readonly DisplayImageCaputure _Caputure;
-        private readonly System.Timers.Timer _SenderTimer = new();
+        private readonly Timer _SenderTimer = new Timer();
 
         public ImageFormat Format { get; set; } = ImageFormat.Jpeg;
-        public ShareClientSender Sender { get; }
-        public CollectionDataShareClientManager ClientManager { get; }
+        public ISendAlgorithm Sender { get; }
+        public CollectionDataShareAlgorithmManager ClientManager { get; } = new CollectionDataShareAlgorithmManager();
 
         public DisplayImageSender(Connection connection, DisplayImageCaputure caputure, int interval)
         {
-            ClientManager = new CollectionDataShareClientManager(connection.ClientSpec);
-
-            var socket = ShareClientSocket.Udp;
-            socket.Open(connection.LocalEndPoint, connection.RemoteEndPoint);
-            Sender = new ShareClientSender(ClientManager, socket);
-
+            Sender = ShareAlgorithmBuilder.NewBuilder()
+                                          .SetShareClientSpec(connection.ClientSpec)
+                                          .SetShareAlgorithmManager(ClientManager)
+                                          .SetLocalEndoPoint(connection.LocalEndPoint)
+                                          .BuildSend(connection.RemoteEndPoint);
             _Caputure = caputure;
             _SenderTimer.Interval = interval;
             _SenderTimer.Elapsed += Send;

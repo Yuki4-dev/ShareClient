@@ -1,4 +1,5 @@
-﻿using ShareClient.Component;
+﻿using ShareClient.Component.Algorithm;
+using ShareClient.Component.Core;
 using ShareClient.Model;
 using ShareClient.Model.ShareClient;
 using System;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ShareClientTest
 {
-    internal class MockClientManager : IClientManager
+    internal class MockClientManager : IShareAlgorithmManager
     {
         public int RetryCount { get; set; } = 2;
         public List<int> SendDataSize { get; } = new();
@@ -16,9 +17,7 @@ namespace ShareClientTest
         public ShareClientSpec ClientSpec { get; } = new();
         public IShareClientLogger Logger => new MockShareClientLogger();
 
-        public MockClientManager()
-        {
-        }
+        public MockClientManager() { }
 
         public bool HandleException(Exception ex)
         {
@@ -37,7 +36,7 @@ namespace ShareClientTest
         }
     }
 
-    internal class MockClientSocket : IClientSocket
+    internal class MockClientSocket : IShareClientSocket
     {
         public List<byte[]> ImageBytes { get; } = new();
         public bool IsOpen { get; private set; } = true;
@@ -74,23 +73,10 @@ namespace ShareClientTest
         }
     }
 
-    internal class MockReceiveImageProvider : IReceiveDataProvider
-    {
-        public byte[] Data { get; private set; }
-
-        public bool CanReceive => true;
-
-        public void Receive(byte[] data)
-        {
-            Data = data;
-        }
-    }
-
     internal class MockShareClientLogger : IShareClientLogger
     {
         public void Error(string message, Exception exception)
         {
-
         }
 
         public void Info(string message)

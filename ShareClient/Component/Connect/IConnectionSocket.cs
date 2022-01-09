@@ -1,6 +1,4 @@
-﻿using ShareClient.Model;
-using ShareClient.Model.ShareClient;
-using System;
+﻿using System;
 using System.Net;
 
 namespace ShareClient.Component.Connect
@@ -8,7 +6,7 @@ namespace ShareClient.Component.Connect
     public interface IConnectionSocket : IDisposable
     {
         IPEndPoint LocalEndPoint { get; }
-        void Send(IPEndPoint remoteEndPoint, ShareClientData sendData);
+        void Send(IPEndPoint remoteEndPoint, byte[] sendData);
         ConnectionSocketRecieveData Recieve();
         public void Close();
     }

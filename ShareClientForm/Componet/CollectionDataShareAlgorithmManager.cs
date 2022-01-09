@@ -1,5 +1,5 @@
-﻿using ShareClient.Model;
-using ShareClient.Model.ShareClient;
+﻿using ShareClient.Component.Algorithm;
+using ShareClient.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,21 +9,17 @@ using System.Threading;
 
 namespace ShareClient.Component
 {
-    public class CollectionDataShareClientManager : IClientManager
+    public class CollectionDataShareAlgorithmManager : IShareAlgorithmManager
     {
         private readonly SemaphoreSlim _Semaphore = new(1);
         private readonly List<int> _SendDataSize = new();
         private readonly List<int> _RecieveDataSize = new();
 
-        public ShareClientSpec ClientSpec { get; }
         public int RetryCount { get; set; } = 2;
         public int DataSizeCapacity { get; set; } = 1000;
         public IShareClientLogger Logger { get; private set; } = new DebugLogger();
 
-        public CollectionDataShareClientManager(ShareClientSpec clientSpec)
-        {
-            ClientSpec = clientSpec;
-        }
+        public CollectionDataShareAlgorithmManager() { }
 
         public virtual bool HandleException(Exception ex)
         {

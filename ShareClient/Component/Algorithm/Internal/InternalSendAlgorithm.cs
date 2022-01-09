@@ -1,33 +1,36 @@
-﻿using ShareClient.Model;
+﻿using ShareClient.Component.Core;
 using ShareClient.Model.ShareClient;
 using System;
 using System.Security.Cryptography;
 using System.Threading;
 
-namespace ShareClient.Component.ShareClient
+namespace ShareClient.Component.Algorithm
 {
-    public class ShareClientSender : IShareClient
+    internal class InternalSendAlgorithm : ISendAlgorithm
     {
+        private readonly object _LockObj = new object();
+        private readonly HashAlgorithm _HashAlgorithm = new MD5CryptoServiceProvider();
+
         private int atomicCode = 0;
         private byte[] oldHash = Array.Empty<byte>();
-        private readonly object _LockObj = new();
-        private readonly HashAlgorithm _HashAlgorithm = new MD5CryptoServiceProvider();
-        protected bool StopApplicationData { get; set; } = false;
+        private bool stopApplicationData = false;
 
-        public event EventHandler ShareClientClosed;
+        private readonly ShareClientSpec _ClientSpec;
+        private readonly IShareAlgorithmManager _Manager;
+        private readonly IShareClientSocket _Socket;
 
-        public IClientSocket Socket { get; }
-        public IClientManager ClientManager { get; }
+        public event EventHandler ShareAlgorithmClosed;
 
-        public ShareClientSender(IClientManager maneger, IClientSocket client)
+        public InternalSendAlgorithm(ShareClientSpec clientSpec, IShareAlgorithmManager maneger, IShareClientSocket socket)
         {
-            ClientManager = maneger;
-            Socket = client;
+            _ClientSpec = clientSpec;
+            _Manager = maneger;
+            _Socket = socket;
         }
 
         public void Send(byte[] data)
         {
-            if (!ClientManager.ClientSpec.SendSameData)
+            if (!_ClientSpec.SendSameData)
             {
                 var hash = _HashAlgorithm.ComputeHash(data);
                 if (EqualsHash(hash, oldHash))
@@ -38,17 +41,17 @@ namespace ShareClient.Component.ShareClient
             }
 
             SendData(data);
-            Thread.Sleep(ClientManager.ClientSpec.SendDelay);
+            Thread.Sleep(_ClientSpec.SendDelay);
         }
 
         private void SendData(byte[] bytes)
         {
-            int sendSize = ClientManager.ClientSpec.BufferSize - ShareClientHeader.SIZE;
+            int sendSize = _ClientSpec.BufferSize - ShareClientHeader.SIZE;
             int splitCount = (bytes.Length / sendSize) + 1;
             if (splitCount > byte.MaxValue)
             {
                 var ex = new ArgumentOutOfRangeException($"SplitCount : {splitCount}");
-                ClientManager.Logger.Error($"Over SplitCount : {byte.MaxValue}", ex);
+                _Manager.Logger.Error($"Over SplitCount : {byte.MaxValue}", ex);
                 throw ex;
             }
 
@@ -79,38 +82,38 @@ namespace ShareClient.Component.ShareClient
 
         protected void SendShareClientData(ShareClientData clientData)
         {
-            if (StopApplicationData && clientData.Header.DataType == SendDataType.Application)
+            if (stopApplicationData && clientData.Header.DataType == SendDataType.Application)
             {
-                ClientManager.Logger.Info($"Stop Application or ShareClientData Convert Fail or Type {clientData.Header.DataType}");
+                _Manager.Logger.Info($"Stop Application or ShareClientData Convert Fail or Type {clientData.Header.DataType}");
                 return;
             }
 
             var sendData = clientData.ToByte();
-            if (!ClientManager.PreSendDataSize(sendData.Length))
+            if (!_Manager.PreSendDataSize(sendData.Length))
             {
-                ClientManager.Logger.Info($"Dont't Allow  Size of Send  Byte  : {sendData.Length}");
+                _Manager.Logger.Info($"Dont't Allow  Size of Send  Byte  : {sendData.Length}");
                 return;
             }
 
             int count = 0;
-            while (Socket.IsOpen)
+            while (_Socket.IsOpen)
             {
                 try
                 {
-                    Socket.Send(sendData);
+                    _Socket.Send(sendData);
                     Thread.Sleep(1);
                     break;
                 }
                 catch (Exception ex)
                 {
-                    ClientManager.Logger.Error($"Sokect Send Throw Exception, Socket IsOpen : {Socket.IsOpen}", ex);
-                    if (Socket.IsOpen)
+                    _Manager.Logger.Error($"Sokect Send Throw Exception, Socket IsOpen : {_Socket.IsOpen}", ex);
+                    if (_Socket.IsOpen)
                     {
-                        ClientManager.Logger.Error($"Exception Throw Count : {count + 1 }, RetryCount: {ClientManager.RetryCount}", ex);
-                        if (++count > ClientManager.RetryCount || ClientManager.HandleException(ex))
+                        _Manager.Logger.Error($"Exception Throw Count : {count + 1 }, RetryCount: {_Manager.RetryCount}", ex);
+                        if (++count > _Manager.RetryCount || _Manager.HandleException(ex))
                         {
                             var se = new ShareClientException(clientData.Header, ex.Message, ex);
-                            ClientManager.Logger.Error($"Throw Exception.", se);
+                            _Manager.Logger.Error($"Throw Exception.", se);
                             throw se;
                         }
                     }
@@ -153,26 +156,26 @@ namespace ShareClient.Component.ShareClient
 
         public void Close()
         {
-            if (!Socket.IsOpen)
+            if (!_Socket.IsOpen)
             {
-                ClientManager.Logger.Info("Socket is Not Open.");
+                _Manager.Logger.Info("Socket is Not Open.");
                 return;
             }
 
             try
             {
-                StopApplicationData = true;
+                stopApplicationData = true;
                 SendShareClientData(new ShareClientData(ShareClientHeader.CreateClose()));
             }
             catch (Exception ex)
             {
-                ClientManager.Logger.Error("Fail Close.", ex);
+                _Manager.Logger.Error("Fail Close.", ex);
             }
             finally
             {
-                Socket.Dispose();
-                ShareClientClosed?.Invoke(this, new());
-                ClientManager.Logger.Info("Sender Socket Close.");
+                _Socket.Dispose();
+                ShareAlgorithmClosed?.Invoke(this, new());
+                _Manager.Logger.Info("Sender Socket Close.");
             }
         }
     }

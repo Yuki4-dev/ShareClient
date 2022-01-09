@@ -1,5 +1,4 @@
-﻿using ShareClient.Model;
-using ShareClient.Model.Connect;
+﻿using ShareClient.Model.Connect;
 using System;
 using System.Net;
 using System.Text;

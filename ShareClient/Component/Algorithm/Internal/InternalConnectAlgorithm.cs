@@ -1,18 +1,24 @@
-﻿using ShareClient.Model;
-using ShareClient.Model.ShareClient;
+﻿using ShareClient.Model.ShareClient;
 using System;
 using System.Linq;
 
-namespace ShareClient.Component.ShareClient.Internal
+namespace ShareClient.Component.Algorithm.Internal
 {
-    public class SplitConnectFactory
+    internal interface IConnectAlgorithm
     {
-        public static ISplitConnect Create(ShareClientData baseData)
+        public bool IsComplete { get; }
+        public bool AddMember(ShareClientData connectData);
+        public byte[] GetConnectData();
+    }
+
+    internal class InternalConnectAlgorithm
+    {
+        public static IConnectAlgorithm Create(ShareClientData baseData)
         {
-            return new SplitConnect(baseData);
+            return new ConnectAlgorithm(baseData);
         }
 
-        private class SplitConnect : ISplitConnect
+        private class ConnectAlgorithm : IConnectAlgorithm
         {
             private int count = 1;
             private readonly long maxCode;
@@ -22,7 +28,7 @@ namespace ShareClient.Component.ShareClient.Internal
 
             public bool IsComplete => spritCount == count;
 
-            public SplitConnect(ShareClientData baseData)
+            public ConnectAlgorithm(ShareClientData baseData)
             {
                 spritCount = baseData.Header.SplitCount;
                 buffer = new ShareClientData[spritCount];

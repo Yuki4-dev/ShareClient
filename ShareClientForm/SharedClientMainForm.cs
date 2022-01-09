@@ -1,6 +1,4 @@
-﻿using ShareClient.Component;
-using ShareClient.Component.Connect;
-using ShareClient.Model;
+﻿using ShareClient.Component.Connect;
 using ShareClient.Model.Connect;
 using ShareClient.Model.ShareClient;
 using SharedClientForm;
@@ -161,7 +159,7 @@ namespace SharedDisplayForm
                 PushMessage("接続しました。");
                 _Sender = new DisplayImageSender(connection, new DisplayImageCaputure(hWnd, _SettingForm.WindowWidth), _SettingForm.FlameLate);
                 _Sender.Format = (ImageFormat)ImageCmb.SelectedItem;
-                _Sender.Sender.ShareClientClosed += (_, __) => PushMessage("切断しました。");
+                _Sender.Sender.ShareAlgorithmClosed += (_, __) => PushMessage("切断しました。");
                 _Sender.Start();
             }
             else
@@ -235,7 +233,7 @@ namespace SharedDisplayForm
                 {
                     PushMessage("接続しました。");
                     _Receiver = new DisplayImageReciver(connection, _SettingForm.FlameLate, PictureArea);
-                    _Receiver.Reciver.ShareClientClosed += (_, __) => PushMessage("切断されました。");
+                    _Receiver.Reciver.ShareAlgorithmClosed += (_, __) => PushMessage("切断されました。");
                     _Receiver.Start();
                 }
                 else
@@ -247,7 +245,7 @@ namespace SharedDisplayForm
 
         private ConnectionResponse AcceptCallback(IPEndPoint iPEndPoint, ConnectionData connectionData)
         {
-            if(InvokeRequired)
+            if (InvokeRequired)
             {
                 return Invoke(() => AcceptCallback(iPEndPoint, connectionData));
             }

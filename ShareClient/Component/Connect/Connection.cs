@@ -1,5 +1,5 @@
-﻿using ShareClient.Component.Connect.Internal;
-using ShareClient.Component.ShareClient.Internal;
+﻿using ShareClient.Component.Algorithm.Internal;
+using ShareClient.Component.Connect.Internal;
 using ShareClient.Model;
 using ShareClient.Model.Connect;
 using ShareClient.Model.ShareClient;
@@ -79,12 +79,12 @@ namespace ShareClient.Component.Connect
                 IConnectionSocket socket = Socket();
 
                 var tokenSource = new CancellationTokenSource();
-                RunCancellation(socket,tokenSource.Token);
+                RunCancellation(socket, tokenSource.Token);
 
                 Connection connection = null;
                 try
                 {
-                    connection = ConnectInternal(socket,connectEndPoint, connectionData);
+                    connection = ConnectInternal(socket, connectEndPoint, connectionData);
                 }
                 catch (ObjectDisposedException ex)
                 {
@@ -104,7 +104,7 @@ namespace ShareClient.Component.Connect
                 _Logger.Info($"Start Connect. -> {connectEndPoint}");
 
                 var sendData = new ShareClientData(ShareClientHeader.CreateSystem((uint)connectionData.Size), connectionData.ToByte());
-                Send(socket,connectEndPoint, sendData);
+                Send(socket, connectEndPoint, sendData);
 
                 var recieveData = Recive(socket);
                 var responseData = ShareClientData.FromBytes(recieveData.RecieveBytes);
@@ -146,7 +146,7 @@ namespace ShareClient.Component.Connect
                 IConnectionSocket socket = Socket();
 
                 var tokenSource = new CancellationTokenSource();
-                RunCancellation(socket,tokenSource.Token);
+                RunCancellation(socket, tokenSource.Token);
 
                 Connection connection = null;
                 try
@@ -193,7 +193,7 @@ namespace ShareClient.Component.Connect
                 _Logger.Info($"AcceptRequest is {connectionResponse.IsConnect}.");
 
                 var responseData = new ShareClientData(ShareClientHeader.CreateSystem((uint)connectionResponse.Size), connectionResponse.ToByte());
-                Send(socket,remoteEndPoint, responseData);
+                Send(socket, remoteEndPoint, responseData);
 
                 Connection connection = null;
                 if (connectionResponse.IsConnect)
@@ -267,7 +267,7 @@ namespace ShareClient.Component.Connect
             {
                 try
                 {
-                    socket.Send(remoteEndPoint, shareClientData);
+                    socket.Send(remoteEndPoint, shareClientData.ToByte());
                 }
                 catch (Exception ex)
                 {

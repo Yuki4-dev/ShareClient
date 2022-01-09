@@ -1,6 +1,4 @@
-﻿using ShareClient.Model;
-using ShareClient.Model.ShareClient;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 
 namespace ShareClient.Component.Connect.Internal
@@ -21,9 +19,9 @@ namespace ShareClient.Component.Connect.Internal
             _UdpClient = new UdpClient(localEndPoint);
         }
 
-        public void Send(IPEndPoint remoteEndPoint, ShareClientData sendData)
+        public void Send(IPEndPoint remoteEndPoint, byte[] sendData)
         {
-            _UdpClient.Send(sendData.ToByte(), sendData.Size, remoteEndPoint);
+            _UdpClient.Send(sendData, sendData.Length, remoteEndPoint);
         }
 
         public ConnectionSocketRecieveData Recieve()

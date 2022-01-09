@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Net;
 
-namespace ShareClient.Component.ShareClient.Internal
+namespace ShareClient.Component.Algorithm.Internal
 {
     internal class DebugLogger : IShareClientLogger
     {

@@ -3,29 +3,20 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace ShareClient.Component.Core
+namespace ShareClient.Component.Core.Internal
 {
-    internal class UdpClientSocket : IClientSocket
+    internal class InternalUdpClientSocket : IShareClientSocket
     {
-        private UdpClient _UdpClient;
+        private readonly UdpClient _UdpClient;
         private IPEndPoint _Remote;
 
-        public bool IsOpen { get; private set; }
+        public bool IsOpen { get; private set; } = false;
 
-        public UdpClientSocket() { }
-
-        public void Open(IPEndPoint local, IPEndPoint remote)
+        public InternalUdpClientSocket()
         {
-            if (IsOpen)
-            {
-                throw new SocketException(IsOpen, "Client is Open.", null);
-            }
-            _Remote = remote;
-
             try
             {
-                _UdpClient = new UdpClient(local);
-                _UdpClient.Connect(remote);
+                _UdpClient = new UdpClient();
                 IsOpen = true;
             }
             catch (Exception ex)
@@ -34,9 +25,40 @@ namespace ShareClient.Component.Core
             }
         }
 
+        public InternalUdpClientSocket(IPEndPoint iPEndPoint)
+        {
+            try
+            {
+                _UdpClient = new UdpClient(iPEndPoint);
+                IsOpen = true;
+            }
+            catch (Exception ex)
+            {
+                throw new SocketException(IsOpen, "Open Failure : " + ex.Message, ex);
+            }
+        }
+
+        public void Connect(IPEndPoint iPEndPoint)
+        {
+            if (!IsOpen)
+            {
+                throw new SocketException(IsOpen, "Client is not Open.", null);
+            }
+
+            try
+            {
+                _UdpClient.Connect(iPEndPoint);
+                _Remote = iPEndPoint;
+            }
+            catch (Exception ex)
+            {
+                throw new SocketException(IsOpen, "Connect Failure : " + ex.Message, ex);
+            }
+        }
+
         public async Task<byte[]> ReceiveAsync()
         {
-            CheckOpenAndThrow();
+            CheckClient();
             return await Task.Run(Receive);
         }
 
@@ -46,7 +68,7 @@ namespace ShareClient.Component.Core
             {
                 IPEndPoint receiveEp = null;
                 var recieveData = _UdpClient.Receive(ref receiveEp);
-                if (_Remote.Equals(receiveEp))
+                if (_Remote == null || _Remote.Equals(receiveEp))
                 {
                     return recieveData;
                 }
@@ -68,7 +90,7 @@ namespace ShareClient.Component.Core
 
         public void Send(byte[] sendData)
         {
-            CheckOpenAndThrow();
+            CheckClient(true);
 
             try
             {
@@ -87,11 +109,15 @@ namespace ShareClient.Component.Core
             }
         }
 
-        private void CheckOpenAndThrow()
+        private void CheckClient(bool withConnect = false)
         {
             if (!IsOpen)
             {
                 throw new SocketException(IsOpen, "Client is Not Open.", null);
+            }
+            else if (withConnect && _Remote == null)
+            {
+                throw new SocketException(IsOpen, "Client is Not Connect.", null);
             }
         }
 
