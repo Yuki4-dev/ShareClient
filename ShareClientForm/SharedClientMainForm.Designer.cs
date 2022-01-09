@@ -44,6 +44,8 @@ namespace SharedDisplayForm
             this.SpeedBtn = new SharedClientForm.DropButton();
             this.SpeedMeter = new SharedClientForm.SpeedMeter();
             this.SettingBtn = new SharedClientForm.DropButton();
+            this.Activated += SharedDisplayForm_Activated;
+            this.FormClosing += SharedClientMainForm_FormClosing;
             this.SuspendLayout();
             // 
             // ClientRudioBtn
@@ -55,7 +57,7 @@ namespace SharedDisplayForm
             this.ClientRudioBtn.TabIndex = 0;
             this.ClientRudioBtn.Text = "クライアント";
             this.ClientRudioBtn.UseVisualStyleBackColor = true;
-            this.ClientRudioBtn.CheckedChanged += new System.EventHandler(this.ClientRudioBtn_CheckedChanged);
+            this.ClientRudioBtn.CheckedChanged += new System.EventHandler(this.RudioBtn_CheckedChanged);
             // 
             // ServerRudioBtn
             // 
@@ -68,7 +70,7 @@ namespace SharedDisplayForm
             this.ServerRudioBtn.TabStop = true;
             this.ServerRudioBtn.Text = "サーバー";
             this.ServerRudioBtn.UseVisualStyleBackColor = true;
-            this.ServerRudioBtn.CheckedChanged += new System.EventHandler(this.ServerRudioBtn_CheckedChanged);
+            this.ServerRudioBtn.CheckedChanged += new System.EventHandler(this.RudioBtn_CheckedChanged);
             // 
             // PictureArea
             // 

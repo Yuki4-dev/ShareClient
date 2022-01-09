@@ -3,7 +3,13 @@ using System.Windows.Forms;
 
 namespace SharedClientForm
 {
-    internal class PictureArea : Control, IPictureArea
+    public interface IPictureArea
+    {
+        public void PaintDefault();
+        public void PaintPicture(Image img);
+    }
+
+    public class PictureArea : Control, IPictureArea
     {
         protected readonly PictureBox _MainPicture = new();
 

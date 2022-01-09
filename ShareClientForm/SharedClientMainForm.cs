@@ -1,6 +1,6 @@
-﻿using ShareClient.Component.Connect;
-using ShareClient.Model.Connect;
+﻿using ShareClient.Model.Connect;
 using ShareClient.Model.ShareClient;
+using ShareClientForm.Componet;
 using SharedClientForm;
 using SharedClientForm.Component;
 using System;
@@ -16,18 +16,13 @@ namespace SharedDisplayForm
 {
     public partial class SharedClientMainForm : Form
     {
-        private readonly ImageFormat[] Formats = new ImageFormat[] { ImageFormat.Jpeg, ImageFormat.Png, ImageFormat.Gif };
+        private readonly ImageFormat[] _Formats = new ImageFormat[] { ImageFormat.Jpeg, ImageFormat.Png, ImageFormat.Gif };
         private readonly SemaphoreSlim _Semaphore = new SemaphoreSlim(1);
         private readonly SettingForm _SettingForm = new SettingForm();
-        private DisplayImageReciver _Receiver;
-        private DisplayImageSender _Sender;
-        private bool isCancelAccept = false;
-        private bool isCancelConnect = false;
-
         private readonly Parameter _ReciveParam;
         private readonly Parameter _SendParam;
-        private readonly System.Windows.Forms.Timer _SendByteTimer = new System.Windows.Forms.Timer();
-        private readonly System.Windows.Forms.Timer _ReciveByteTimer = new System.Windows.Forms.Timer();
+        private readonly ImageShareAlgorithmManeger _ShareAlgorithmManeger = new ImageShareAlgorithmManeger();
+        private readonly System.Windows.Forms.Timer _SpeedTimer = new System.Windows.Forms.Timer();
 
         public SharedClientMainForm()
         {
@@ -36,7 +31,7 @@ namespace SharedDisplayForm
             SettingBtn.DropVisual = b => b.BackColor = Color.LightGray;
             SettingBtn.CloseVisual = b => b.BackColor = BackColor;
 
-            ImageCmb.Items.AddRange(Formats);
+            ImageCmb.Items.AddRange(_Formats);
             ImageCmb.SelectedIndex = 0;
 
             ClientHostTextBox.Text = "127.0.0.1";
@@ -49,21 +44,9 @@ namespace SharedDisplayForm
             SpeedMeter.Add(_ReciveParam);
             SpeedMeter.Add(_SendParam);
 
-            _SendByteTimer.Interval = 1000;
-            _SendByteTimer.Tick += SendByteTimer_Tick;
-            _SendByteTimer.Start();
-
-            _ReciveByteTimer.Interval = 1000;
-            _ReciveByteTimer.Tick += ReciveByteTimer_Tick;
-            _ReciveByteTimer.Start();
-
-            Activated += SharedDisplayForm_Activated;
-            FormClosing += (s, e) =>
-            {
-                Stop();
-                _SendByteTimer.Dispose();
-                _ReciveByteTimer.Dispose();
-            };
+            _SpeedTimer.Interval = 1000;
+            _SpeedTimer.Tick += SpeedTimer_Tick;
+            _SpeedTimer.Start();
         }
 
         private void SharedDisplayForm_Activated(object sender, EventArgs e)
@@ -72,41 +55,25 @@ namespace SharedDisplayForm
             SettingBtn.IsDrop = false;
         }
 
-        private void ReciveByteTimer_Tick(object sender, EventArgs e)
+        private void SharedClientMainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_Receiver == null)
-            {
-                return;
-            }
-            int size = 0;
-            try
-            {
-                size = _Receiver.ClientManager.GetRecieveDataSize();
-            }
-            catch
-            {
-            }
-            SetSpeed(size, _ReciveParam);
-            _Receiver.ClientManager.RecieveDataSizeClear();
+            Stop();
+            _SpeedTimer.Dispose();
         }
 
-        private void SendByteTimer_Tick(object sender, EventArgs e)
+        private void SpeedTimer_Tick(object sender, EventArgs e)
         {
-            if (_Sender == null)
-            {
-                return;
-            }
-
-            int size = 0;
             try
             {
-                size = _Sender.ClientManager.GetSendDataSize();
+                SetSpeed(_ShareAlgorithmManeger.ReciveManager.GetRecieveDataSize(), _ReciveParam);
+                _ShareAlgorithmManeger.ReciveManager.RecieveDataSizeClear();
+                SetSpeed(_ShareAlgorithmManeger.SendManager.GetSendDataSize(), _SendParam);
+                _ShareAlgorithmManeger.SendManager.SendDataSizeClear();
             }
-            catch
+            catch (Exception ex)
             {
+                PushMessage(ex.Message);
             }
-            SetSpeed(size, _SendParam);
-            _Sender.ClientManager.SendDataSizeClear();
         }
 
         private void SetSpeed(int size, Parameter parameter)
@@ -136,70 +103,15 @@ namespace SharedDisplayForm
             }
         }
 
-        private async void ClientWork(string title, IntPtr hWnd)
+        private void RudioBtn_CheckedChanged(object sender, EventArgs e)
         {
-            var ip = ClientHostTextBox.Text;
-            var port = int.Parse(ClientPortTextBox.Text);
-
-            Connection connection = null;
-            bool throwEx = false;
-            try
-            {
-                isCancelConnect = false;
-                var iPEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
-                connection = await Task.Run(() => Connection.Builder()
-                                                            .SetCancellation(() => isCancelConnect)
-                                                            .Connect(iPEndPoint, new ConnectionData(new ShareClientSpec(), GetMeta())));
-            }
-            catch (Exception ex)
-            {
-                throwEx = true;
-                PushMessage(ex.Message);
-            }
-
-            if (connection != null)
-            {
-                PushMessage("接続しました。");
-                _Sender = new DisplayImageSender(connection, new DisplayImageCaputure(hWnd, _SettingForm.WindowWidth), _SettingForm.FlameLate);
-                _Sender.Format = (ImageFormat)ImageCmb.SelectedItem;
-                _Sender.Sender.ShareAlgorithmClosed += (_, __) => PushMessage("切断しました。");
-                _Sender.Start();
-            }
-            else
-            {
-                if (!throwEx)
-                {
-                    PushMessage("接続を拒否されました。");
-                }
-            }
-        }
-
-        private byte[] GetMeta()
-        {
-            var str = Encoding.UTF8.GetBytes(_SettingForm.UserName);
-            var meta = new byte[str.Length + 4 + 4];
-            Array.Copy(str, meta, str.Length);
-            Array.Copy(BitConverter.GetBytes(_SettingForm.FlameLate), 0, meta, str.Length, 4);
-            Array.Copy(BitConverter.GetBytes(_SettingForm.WindowWidth), 0, meta, str.Length + 4, 4);
-
-            return meta;
-        }
-
-        private void ClientRudioBtn_CheckedChanged(object sender, EventArgs e)
-        {
-            var rb = (RadioButton)sender;
-            if (rb.Checked)
+            if (ClientRudioBtn.Checked)
             {
                 ClientHostTextBox.Enabled = true;
                 ClientPortTextBox.Enabled = true;
                 ServerPortTextBox.Enabled = false;
             }
-        }
-
-        private void ServerRudioBtn_CheckedChanged(object sender, EventArgs e)
-        {
-            var rb = (RadioButton)sender;
-            if (rb.Checked)
+            else if (ServerRudioBtn.Checked)
             {
                 ClientHostTextBox.Enabled = false;
                 ClientPortTextBox.Enabled = false;
@@ -209,42 +121,57 @@ namespace SharedDisplayForm
 
         private async void StartBtn_Click(object sender, EventArgs e)
         {
-
             if (ClientRudioBtn.Checked)
             {
                 var sds = new DisplaySelectForm(ClientWork);
                 sds.ShowDialog(this);
+                return;
             }
-            else
+
+            try
             {
-                var port = int.Parse(ServerPortTextBox.Text);
-                Connection connection = null;
-
-                try
-                {
-                    isCancelAccept = false;
-                    var iPEndPoint = new IPEndPoint(IPAddress.Any, port);
-                    connection = await Task.Run(() => Connection.Builder()
-                                                     　　　　　　.SetCancellation(() => isCancelAccept)
-                                                                .SetAcceptRequest(AcceptCallback)
-                                                                .Accept(iPEndPoint));
-                }
-                catch (Exception ex)
-                {
-                    PushMessage(ex.Message);
-                }
-
+                var iPEndPoint = new IPEndPoint(IPAddress.Any, int.Parse(ServerPortTextBox.Text));
+                var connection = await _ShareAlgorithmManeger.AcceptAsync(iPEndPoint, AcceptCallback);
                 if (connection != null)
                 {
                     PushMessage("接続しました。");
-                    _Receiver = new DisplayImageReciver(connection, _SettingForm.FlameLate, PictureArea);
-                    _Receiver.Reciver.ShareAlgorithmClosed += (_, __) => PushMessage("切断されました。");
-                    _Receiver.Start();
+                    _ShareAlgorithmManeger.Recieve(connection, _SettingForm.FlameLate, PictureArea, () => PushMessage("切断されました。"));
                 }
                 else
                 {
                     PushMessage("切断しました。");
                 }
+            }
+            catch (Exception ex)
+            {
+                PushMessage(ex.Message);
+            }
+        }
+
+        private async void ClientWork(string title, IntPtr hWnd)
+        {
+            try
+            {
+                var iPEndPoint = new IPEndPoint(IPAddress.Parse(ClientHostTextBox.Text), int.Parse(ClientPortTextBox.Text));
+                var connection = await _ShareAlgorithmManeger.ConnectAsync(iPEndPoint, new ConnectionData(new ShareClientSpec(), GetMeta()));
+                if (connection != null)
+                {
+                    PushMessage("接続しました。");
+                    _ShareAlgorithmManeger.Send(connection,
+                                                new DisplayImageCaputure(hWnd, _SettingForm.WindowWidth),
+                                                _SettingForm.FlameLate,
+                                                (ImageFormat)ImageCmb.SelectedItem,
+                                                () => PushMessage("切断しました。"));
+                }
+                else
+                {
+                    PushMessage("接続を拒否されました。");
+                }
+            }
+            catch (Exception ex)
+            {
+                PushMessage(ex.Message);
+                return;
             }
         }
 
@@ -261,6 +188,17 @@ namespace SharedDisplayForm
             c.ShowDialog(this);
 
             return new ConnectionResponse(result, connectionData);
+        }
+
+        private byte[] GetMeta()
+        {
+            var str = Encoding.UTF8.GetBytes(_SettingForm.UserName);
+            var meta = new byte[str.Length + 4 + 4];
+            Array.Copy(str, meta, str.Length);
+            Array.Copy(BitConverter.GetBytes(_SettingForm.FlameLate), 0, meta, str.Length, 4);
+            Array.Copy(BitConverter.GetBytes(_SettingForm.WindowWidth), 0, meta, str.Length + 4, 4);
+
+            return meta;
         }
 
         private async void PushMessage(string msg)
@@ -295,10 +233,7 @@ namespace SharedDisplayForm
 
         private void Stop()
         {
-            isCancelConnect = true;
-            isCancelAccept = true;
-            _Sender?.Dispose();
-            _Receiver?.Dispose();
+            _ShareAlgorithmManeger.Stop();
         }
     }
 }

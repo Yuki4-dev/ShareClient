@@ -163,7 +163,7 @@ namespace ShareClient.Component.Connect
                 }
                 catch (Exception ex)
                 {
-                    if(isCancellation)
+                    if (isCancellation)
                     {
                         _Logger.Info($"Socket Closed. : {ex.Message}");
                     }

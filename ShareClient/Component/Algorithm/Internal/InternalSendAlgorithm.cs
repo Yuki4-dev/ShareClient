@@ -175,7 +175,7 @@ namespace ShareClient.Component.Algorithm
             {
                 _Socket.Dispose();
                 ShareAlgorithmClosed?.Invoke(this, new());
-                _Manager.Logger.Info("Sender Socket Close.");
+                _Manager.Logger.Info("SendAlgorithm Socket Close.");
             }
         }
     }

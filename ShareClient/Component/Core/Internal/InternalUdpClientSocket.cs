@@ -130,6 +130,7 @@ namespace ShareClient.Component.Core.Internal
         {
             try
             {
+                IsOpen = false;
                 _UdpClient?.Dispose();
             }
             catch

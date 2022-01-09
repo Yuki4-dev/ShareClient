@@ -11,9 +11,9 @@ namespace ShareClient.Component
 {
     public class CollectionDataShareAlgorithmManager : IShareAlgorithmManager
     {
-        private readonly SemaphoreSlim _Semaphore = new(1);
-        private readonly List<int> _SendDataSize = new();
-        private readonly List<int> _RecieveDataSize = new();
+        private readonly SemaphoreSlim _Semaphore = new SemaphoreSlim(1);
+        private readonly List<int> _SendDataSize = new List<int>();
+        private readonly List<int> _RecieveDataSize = new List<int>();
 
         public int RetryCount { get; set; } = 2;
         public int DataSizeCapacity { get; set; } = 1000;
