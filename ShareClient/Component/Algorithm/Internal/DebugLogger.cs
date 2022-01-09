@@ -19,12 +19,12 @@ namespace ShareClient.Component.Algorithm.Internal
 
         public void Receive(EndPoint iPEndPoint, byte[] receiveData)
         {
-            Debug.WriteLine($"Receive -> {iPEndPoint.ToString()}");
+            Debug.WriteLine($"Receive -> {iPEndPoint}");
         }
 
         public void Send(EndPoint iPEndPoint, byte[] sendData)
         {
-            Debug.WriteLine($"Send -> {iPEndPoint.ToString()}");
+            Debug.WriteLine($"Send -> {iPEndPoint}");
         }
     }
 }
