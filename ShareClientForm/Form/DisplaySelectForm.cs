@@ -21,17 +21,17 @@ namespace SharedClientForm
             {
                 if (p.MainWindowTitle.Length != 0)
                 {
-                    windwAdd(p.MainWindowTitle, p.MainWindowHandle);
+                    WindwAdd(p.MainWindowTitle, p.MainWindowHandle);
                 }
             }
         }
 
-        private void windwAdd(string title, IntPtr h)
+        private void WindwAdd(string title, IntPtr h)
         {
             if (windows.ContainsKey(title))
             {
                 var t = title + "1";
-                windwAdd(t, h);
+                WindwAdd(t, h);
                 return;
             }
             windows.Add(title, h);
@@ -60,8 +60,7 @@ namespace SharedClientForm
 
         private void Selected()
         {
-            var title = WindowTextList.SelectedItem as string;
-            if (title == null)
+            if (WindowTextList.SelectedItem is not string title)
             {
                 return;
             }
