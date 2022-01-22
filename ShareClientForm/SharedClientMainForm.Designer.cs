@@ -44,8 +44,6 @@ namespace SharedDisplayForm
             this.SpeedBtn = new SharedClientForm.DropButton();
             this.SpeedMeter = new SharedClientForm.SpeedMeter();
             this.SettingBtn = new SharedClientForm.DropButton();
-            this.Activated += SharedDisplayForm_Activated;
-            this.FormClosing += SharedClientMainForm_FormClosing;
             this.SuspendLayout();
             // 
             // ClientRudioBtn
@@ -53,7 +51,7 @@ namespace SharedDisplayForm
             this.ClientRudioBtn.AutoSize = true;
             this.ClientRudioBtn.Location = new System.Drawing.Point(13, 23);
             this.ClientRudioBtn.Name = "ClientRudioBtn";
-            this.ClientRudioBtn.Size = new System.Drawing.Size(92, 23);
+            this.ClientRudioBtn.Size = new System.Drawing.Size(74, 17);
             this.ClientRudioBtn.TabIndex = 0;
             this.ClientRudioBtn.Text = "クライアント";
             this.ClientRudioBtn.UseVisualStyleBackColor = true;
@@ -65,7 +63,7 @@ namespace SharedDisplayForm
             this.ServerRudioBtn.Checked = true;
             this.ServerRudioBtn.Location = new System.Drawing.Point(13, 71);
             this.ServerRudioBtn.Name = "ServerRudioBtn";
-            this.ServerRudioBtn.Size = new System.Drawing.Size(70, 23);
+            this.ServerRudioBtn.Size = new System.Drawing.Size(57, 17);
             this.ServerRudioBtn.TabIndex = 1;
             this.ServerRudioBtn.TabStop = true;
             this.ServerRudioBtn.Text = "サーバー";
@@ -86,7 +84,7 @@ namespace SharedDisplayForm
             this.ClientHostTextBox.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.ClientHostTextBox.Location = new System.Drawing.Point(109, 14);
             this.ClientHostTextBox.Name = "ClientHostTextBox";
-            this.ClientHostTextBox.Size = new System.Drawing.Size(212, 34);
+            this.ClientHostTextBox.Size = new System.Drawing.Size(212, 29);
             this.ClientHostTextBox.TabIndex = 3;
             // 
             // ClientPortTextBox
@@ -94,7 +92,7 @@ namespace SharedDisplayForm
             this.ClientPortTextBox.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.ClientPortTextBox.Location = new System.Drawing.Point(327, 14);
             this.ClientPortTextBox.Name = "ClientPortTextBox";
-            this.ClientPortTextBox.Size = new System.Drawing.Size(100, 34);
+            this.ClientPortTextBox.Size = new System.Drawing.Size(100, 29);
             this.ClientPortTextBox.TabIndex = 4;
             // 
             // ServerPortTextBox
@@ -102,7 +100,7 @@ namespace SharedDisplayForm
             this.ServerPortTextBox.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.ServerPortTextBox.Location = new System.Drawing.Point(327, 62);
             this.ServerPortTextBox.Name = "ServerPortTextBox";
-            this.ServerPortTextBox.Size = new System.Drawing.Size(100, 34);
+            this.ServerPortTextBox.Size = new System.Drawing.Size(100, 29);
             this.ServerPortTextBox.TabIndex = 4;
             // 
             // StartBtn
@@ -133,17 +131,16 @@ namespace SharedDisplayForm
             this.ImageCmb.FormattingEnabled = true;
             this.ImageCmb.Location = new System.Drawing.Point(523, 21);
             this.ImageCmb.Name = "ImageCmb";
-            this.ImageCmb.Size = new System.Drawing.Size(71, 25);
+            this.ImageCmb.Size = new System.Drawing.Size(71, 21);
             this.ImageCmb.TabIndex = 6;
             // 
             // SpeedBtn
             // 
-            this.SpeedBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SpeedBtn.FlatAppearance.BorderSize = 0;
             this.SpeedBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SpeedBtn.ForeColor = System.Drawing.Color.Gray;
             this.SpeedBtn.IsDrop = false;
-            this.SpeedBtn.Location = new System.Drawing.Point(684, 74);
+            this.SpeedBtn.Location = new System.Drawing.Point(584, 73);
             this.SpeedBtn.Name = "SpeedBtn";
             this.SpeedBtn.Size = new System.Drawing.Size(55, 32);
             this.SpeedBtn.TabIndex = 7;
@@ -153,8 +150,7 @@ namespace SharedDisplayForm
             // 
             // SpeedMeter
             // 
-            this.SpeedMeter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.SpeedMeter.Location = new System.Drawing.Point(489, 110);
+            this.SpeedMeter.Location = new System.Drawing.Point(489, 123);
             this.SpeedMeter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.SpeedMeter.Name = "SpeedMeter";
             this.SpeedMeter.Size = new System.Drawing.Size(250, 147);
@@ -177,11 +173,13 @@ namespace SharedDisplayForm
             // 
             // SharedClientMainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(751, 455);
+            this.Activated += new System.EventHandler(this.SharedClientMainForm_Activated);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(SharedClientMainForm_FormClosing);
             this.Controls.Add(this.SettingBtn);
             this.Controls.Add(this.SpeedMeter);
             this.Controls.Add(this.SpeedBtn);

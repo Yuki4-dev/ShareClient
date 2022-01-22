@@ -49,9 +49,8 @@ namespace SharedDisplayForm
             _SpeedTimer.Start();
         }
 
-        private void SharedDisplayForm_Activated(object sender, EventArgs e)
+        private void SharedClientMainForm_Activated(object sender, EventArgs e)
         {
-            _SettingForm.Hide();
             SettingBtn.IsDrop = false;
         }
 
