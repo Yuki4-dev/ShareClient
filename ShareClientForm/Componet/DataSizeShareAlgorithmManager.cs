@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace ShareClient.Component
 {
-    public class CollectionDataShareAlgorithmManager : IShareAlgorithmManager
+    public class DataSizeShareAlgorithmManager : IShareAlgorithmManager
     {
         private readonly SemaphoreSlim _Semaphore = new SemaphoreSlim(1);
         private readonly List<int> _SendDataSize = new List<int>();
@@ -19,7 +19,7 @@ namespace ShareClient.Component
         public int DataSizeCapacity { get; set; } = 1000;
         public IShareClientLogger Logger { get; private set; } = new DebugLogger();
 
-        public CollectionDataShareAlgorithmManager() { }
+        public DataSizeShareAlgorithmManager() { }
 
         public virtual bool HandleException(Exception ex)
         {

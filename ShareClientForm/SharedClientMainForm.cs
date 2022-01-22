@@ -21,7 +21,7 @@ namespace SharedDisplayForm
         private readonly SettingForm _SettingForm = new SettingForm();
         private readonly Parameter _ReciveParam;
         private readonly Parameter _SendParam;
-        private readonly ImageShareAlgorithmManeger _ShareAlgorithmManeger = new ImageShareAlgorithmManeger();
+        private readonly ImageShareAlgorithm _ShareAlgorithm = new ImageShareAlgorithm();
         private readonly System.Windows.Forms.Timer _SpeedTimer = new System.Windows.Forms.Timer();
 
         public SharedClientMainForm()
@@ -65,10 +65,10 @@ namespace SharedDisplayForm
         {
             try
             {
-                SetSpeed(_ShareAlgorithmManeger.ReciveManager.GetRecieveDataSize(), _ReciveParam);
-                _ShareAlgorithmManeger.ReciveManager.RecieveDataSizeClear();
-                SetSpeed(_ShareAlgorithmManeger.SendManager.GetSendDataSize(), _SendParam);
-                _ShareAlgorithmManeger.SendManager.SendDataSizeClear();
+                SetSpeed(_ShareAlgorithm.ReciveManager.GetRecieveDataSize(), _ReciveParam);
+                _ShareAlgorithm.ReciveManager.RecieveDataSizeClear();
+                SetSpeed(_ShareAlgorithm.SendManager.GetSendDataSize(), _SendParam);
+                _ShareAlgorithm.SendManager.SendDataSizeClear();
             }
             catch (Exception ex)
             {
@@ -131,11 +131,11 @@ namespace SharedDisplayForm
             try
             {
                 var iPEndPoint = new IPEndPoint(IPAddress.Any, int.Parse(ServerPortTextBox.Text));
-                var connection = await _ShareAlgorithmManeger.AcceptAsync(iPEndPoint, AcceptCallback);
+                var connection = await _ShareAlgorithm.AcceptAsync(iPEndPoint, AcceptCallback);
                 if (connection != null)
                 {
                     PushMessage("接続しました。");
-                    _ShareAlgorithmManeger.Recieve(connection, _SettingForm.FlameLate, PictureArea, () => PushMessage("切断されました。"));
+                    _ShareAlgorithm.Recieve(connection, _SettingForm.FlameLate, PictureArea, () => PushMessage("切断されました。"));
                 }
                 else
                 {
@@ -153,11 +153,11 @@ namespace SharedDisplayForm
             try
             {
                 var iPEndPoint = new IPEndPoint(IPAddress.Parse(ClientHostTextBox.Text), int.Parse(ClientPortTextBox.Text));
-                var connection = await _ShareAlgorithmManeger.ConnectAsync(iPEndPoint, new ConnectionData(new ShareClientSpec(), GetMeta()));
+                var connection = await _ShareAlgorithm.ConnectAsync(iPEndPoint, new ConnectionData(new ShareClientSpec(), GetMeta()));
                 if (connection != null)
                 {
                     PushMessage("接続しました。");
-                    _ShareAlgorithmManeger.Send(connection,
+                    _ShareAlgorithm.Send(connection,
                                                 new DisplayImageCaputure(hWnd, _SettingForm.WindowWidth),
                                                 _SettingForm.FlameLate,
                                                 (ImageFormat)ImageCmb.SelectedItem,
@@ -233,7 +233,7 @@ namespace SharedDisplayForm
 
         private void Stop()
         {
-            _ShareAlgorithmManeger.Stop();
+            _ShareAlgorithm.Stop();
         }
     }
 }

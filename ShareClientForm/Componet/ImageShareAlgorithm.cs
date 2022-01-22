@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 
 namespace ShareClientForm.Componet
 {
-    public class ImageShareAlgorithmManeger : IDisposable
+    public class ImageShareAlgorithm : IDisposable
     {
         private bool isCancelAccept = false;
         private bool isCancelConnect = false;
         private DisplayImageReciveAlgorithm _Receiver;
         private DisplayImageSendAlgorithm _Sender;
 
-        public CollectionDataShareAlgorithmManager ReciveManager { get; } = new CollectionDataShareAlgorithmManager();
-        public CollectionDataShareAlgorithmManager SendManager { get; } = new CollectionDataShareAlgorithmManager();
+        public DataSizeShareAlgorithmManager ReciveManager { get; } = new DataSizeShareAlgorithmManager();
+        public DataSizeShareAlgorithmManager SendManager { get; } = new DataSizeShareAlgorithmManager();
 
         public async Task<Connection> ConnectAsync(IPEndPoint connectEndPoint, ConnectionData connectionData)
         {

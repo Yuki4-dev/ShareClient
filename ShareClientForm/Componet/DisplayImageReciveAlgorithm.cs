@@ -75,7 +75,7 @@ namespace SharedClientForm.Component
     {
         public int Capacity { get; set; } = 100;
 
-        private readonly ConcurrentQueue<Image> imgQueue = new();
+        private readonly ConcurrentQueue<Image> imgQueue = new ConcurrentQueue<Image>();
 
         public ReciveImageProvider() { }
 

@@ -11,7 +11,7 @@ namespace SharedClientForm
 
     public class PictureArea : Control, IPictureArea
     {
-        protected readonly PictureBox _MainPicture = new();
+        protected readonly PictureBox _MainPicture = new PictureBox();
 
         public Image DefaultPicture { get; set; }
 

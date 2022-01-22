@@ -8,7 +8,7 @@ namespace SharedClientForm
 {
     public partial class DisplaySelectForm : Form
     {
-        private readonly Dictionary<string, IntPtr> windows = new();
+        private readonly Dictionary<string, IntPtr> windows = new Dictionary<string, IntPtr>();
         public readonly Action<string, IntPtr> SelectedDisplayCallback;
 
         public DisplaySelectForm(Action<string, IntPtr> callback)

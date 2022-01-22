@@ -81,7 +81,7 @@ namespace ShareClient.Component.Algorithm
                 (byte)splitIndex,
                 (uint)sendData.Length);
 
-            SendShareClientData(new(header, sendData));
+            SendShareClientData(new ShareClientData(header, sendData));
         }
 
         protected void SendShareClientData(ShareClientData clientData)
@@ -180,9 +180,9 @@ namespace ShareClient.Component.Algorithm
             try
             {
                 _Socket.Dispose();
-                ShareAlgorithmClosed?.Invoke(this, new());
+                ShareAlgorithmClosed?.Invoke(this, new EventArgs());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _Manager.Logger.Error("Fail Close.", ex);
             }

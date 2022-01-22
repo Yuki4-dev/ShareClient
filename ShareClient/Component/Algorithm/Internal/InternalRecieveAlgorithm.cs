@@ -149,7 +149,7 @@ namespace ShareClient.Component.Algorithm
             try
             {
                 _Socket.Dispose();
-                ShareAlgorithmClosed?.Invoke(this, new());
+                ShareAlgorithmClosed?.Invoke(this, new EventArgs());
             }
             catch (Exception ex)
             {
