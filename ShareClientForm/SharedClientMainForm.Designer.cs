@@ -40,7 +40,6 @@ namespace SharedDisplayForm
             this.ServerPortTextBox = new System.Windows.Forms.TextBox();
             this.StartBtn = new System.Windows.Forms.Button();
             this.StopBtn = new System.Windows.Forms.Button();
-            this.ImageCmb = new System.Windows.Forms.ComboBox();
             this.SpeedBtn = new SharedClientForm.DropButton();
             this.SpeedMeter = new SharedClientForm.SpeedMeter();
             this.SettingBtn = new SharedClientForm.DropButton();
@@ -125,15 +124,6 @@ namespace SharedDisplayForm
             this.StopBtn.UseVisualStyleBackColor = true;
             this.StopBtn.Click += new System.EventHandler(this.StopBtn_Click);
             // 
-            // ImageCmb
-            // 
-            this.ImageCmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ImageCmb.FormattingEnabled = true;
-            this.ImageCmb.Location = new System.Drawing.Point(523, 21);
-            this.ImageCmb.Name = "ImageCmb";
-            this.ImageCmb.Size = new System.Drawing.Size(71, 21);
-            this.ImageCmb.TabIndex = 6;
-            // 
             // SpeedBtn
             // 
             this.SpeedBtn.FlatAppearance.BorderSize = 0;
@@ -178,12 +168,9 @@ namespace SharedDisplayForm
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(751, 455);
-            this.Activated += new System.EventHandler(this.SharedClientMainForm_Activated);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(SharedClientMainForm_FormClosing);
             this.Controls.Add(this.SettingBtn);
             this.Controls.Add(this.SpeedMeter);
             this.Controls.Add(this.SpeedBtn);
-            this.Controls.Add(this.ImageCmb);
             this.Controls.Add(this.StopBtn);
             this.Controls.Add(this.StartBtn);
             this.Controls.Add(this.ServerPortTextBox);
@@ -195,6 +182,8 @@ namespace SharedDisplayForm
             this.Font = new System.Drawing.Font("Yu Gothic UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Name = "SharedClientMainForm";
             this.Text = "SharedDisplay";
+            this.Activated += new System.EventHandler(this.SharedClientMainForm_Activated);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SharedClientMainForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -209,7 +198,6 @@ namespace SharedDisplayForm
         private System.Windows.Forms.Button StartBtn;
         private System.Windows.Forms.Button StopBtn;
         private System.Windows.Forms.TextBox ClientHostTextBox;
-        private System.Windows.Forms.ComboBox ImageCmb;
         private PictureArea PictureArea;
         private DropButton SpeedBtn;
         private SpeedMeter SpeedMeter;
