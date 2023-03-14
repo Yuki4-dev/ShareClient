@@ -25,7 +25,7 @@ namespace ShareClient.Component.Algorithm.Internal
             return true;
         }
 
-        public void SetRecieveDataSize(int size)
+        public void SetReceiveDataSize(int size)
         {
             //
         }

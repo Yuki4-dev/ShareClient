@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShareClient.Exceptions;
+using System;
 
 namespace ShareClient.Model.ShareClient
 {
@@ -91,7 +92,7 @@ namespace ShareClient.Model.ShareClient
                     return false;
                 }
 
-                var sync = bytes.AsSpan().Slice(SyncCodeIndex, SYNC_CODE.Length);
+                var sync = bytes.AsSpan()[..SYNC_CODE.Length];
                 for (int i = 0; i < SYNC_CODE.Length; i++)
                 {
                     if (SYNC_CODE[i] != sync[i])

@@ -1,14 +1,15 @@
 ﻿using ShareClient.Component.Core;
+using ShareClient.Exceptions;
 using ShareClient.Model.ShareClient;
 using System;
 using System.Security.Cryptography;
 using System.Threading;
 
-namespace ShareClient.Component.Algorithm
+namespace ShareClient.Component.Algorithm.Internal
 {
     internal class InternalSendAlgorithm : ISendAlgorithm
     {
-        private readonly object _LockObj = new object();
+        private readonly object _LockObj = new();
         private readonly HashAlgorithm _HashAlgorithm = new MD5CryptoServiceProvider();
 
         private int atomicCode = 0;
@@ -23,10 +24,10 @@ namespace ShareClient.Component.Algorithm
 
         public event EventHandler ShareAlgorithmClosed;
 
-        public InternalSendAlgorithm(ShareClientSpec clientSpec, IShareAlgorithmManager maneger, IShareClientSocket socket)
+        public InternalSendAlgorithm(ShareClientSpec clientSpec, IShareAlgorithmManager manager, IShareClientSocket socket)
         {
             _ClientSpec = clientSpec;
-            _Manager = maneger;
+            _Manager = manager;
             _Socket = socket;
         }
 
@@ -110,10 +111,10 @@ namespace ShareClient.Component.Algorithm
                 }
                 catch (Exception ex)
                 {
-                    _Manager.Logger.Error($"Sokect Send Throw Exception, Socket IsOpen : {_Socket.IsOpen}", ex);
+                    _Manager.Logger.Error($"Socket Send Throw Exception, Socket IsOpen : {_Socket.IsOpen}", ex);
                     if (_Socket.IsOpen)
                     {
-                        _Manager.Logger.Error($"Exception Throw Count : {count + 1 }, RetryCount: {_Manager.RetryCount}", ex);
+                        _Manager.Logger.Error($"Exception Throw Count : {count + 1}, RetryCount: {_Manager.RetryCount}", ex);
                         if (++count > _Manager.RetryCount || _Manager.HandleException(ex))
                         {
                             var se = new ShareClientException(clientData.Header, ex.Message, ex);
@@ -130,7 +131,7 @@ namespace ShareClient.Component.Algorithm
             if (val1.Length == val2.Length)
             {
                 int i = 0;
-                while ((i < val1.Length) && (val1[i] == val2[i]))
+                while (i < val1.Length && val1[i] == val2[i])
                 {
                     i += 1;
                 }
@@ -194,7 +195,7 @@ namespace ShareClient.Component.Algorithm
         {
             if (IsClosed || !_Socket.IsOpen)
             {
-                throw new ShareClientException(null, "Send Algolithm is Closed.", null);
+                throw new ShareClientException(null, "Send Algorithm is Closed.", null);
             }
         }
     }

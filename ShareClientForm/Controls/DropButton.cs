@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace SharedClientForm
+namespace ShareClientForm.Controls
 {
     public class DropButton : Button
     {

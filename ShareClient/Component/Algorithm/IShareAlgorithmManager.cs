@@ -1,5 +1,5 @@
-﻿using ShareClient.Model;
-using System;
+﻿using System;
+using ShareClient.Model;
 
 namespace ShareClient.Component.Algorithm
 {
@@ -9,6 +9,6 @@ namespace ShareClient.Component.Algorithm
         public IShareClientLogger Logger { get; }
         public bool HandleException(Exception ex);
         public bool PreSendDataSize(int size);
-        public void SetRecieveDataSize(int size);
+        public void SetReceiveDataSize(int size);
     }
 }

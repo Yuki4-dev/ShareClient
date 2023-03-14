@@ -21,14 +21,14 @@ namespace ShareClient.Component.Connect.Internal
 
         public void Send(IPEndPoint remoteEndPoint, byte[] sendData)
         {
-            _UdpClient.Send(sendData, sendData.Length, remoteEndPoint);
+            _ = _UdpClient.Send(sendData, sendData.Length, remoteEndPoint);
         }
 
-        public ConnectionSocketRecieveData Recieve()
+        public ConnectionSocketReceiveData Receive()
         {
-            IPEndPoint recieveEndoPoint = null;
-            var recieveBytes = _UdpClient.Receive(ref recieveEndoPoint);
-            return new ConnectionSocketRecieveData(recieveEndoPoint, recieveBytes);
+            IPEndPoint receiveEndoPoint = null;
+            var receiveBytes = _UdpClient.Receive(ref receiveEndoPoint);
+            return new ConnectionSocketReceiveData(receiveEndoPoint, receiveBytes);
         }
 
         public void Dispose()

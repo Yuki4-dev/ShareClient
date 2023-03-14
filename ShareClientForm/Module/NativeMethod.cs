@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace SharedClientForm
+namespace ShareClientForm.Module
 {
     internal class NativeMethod
     {

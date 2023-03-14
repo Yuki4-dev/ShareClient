@@ -34,7 +34,7 @@ namespace ShareClient.Component.Algorithm.Internal
                 buffer = new ShareClientData[spritCount];
                 buffer[baseData.Header.SplitIndex] = baseData;
                 minCode = baseData.Header.AtomicCode - baseData.Header.SplitIndex;
-                maxCode = baseData.Header.AtomicCode + ((spritCount - 1) - baseData.Header.SplitIndex);
+                maxCode = baseData.Header.AtomicCode + (spritCount - 1 - baseData.Header.SplitIndex);
             }
 
             public bool AddMember(ShareClientData value)

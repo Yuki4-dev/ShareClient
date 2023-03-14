@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShareClientForm.Module;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -8,7 +9,7 @@ namespace SharedClientForm
 {
     public partial class DisplaySelectForm : Form
     {
-        private readonly Dictionary<string, IntPtr> windows = new Dictionary<string, IntPtr>();
+        private readonly Dictionary<string, IntPtr> windows = new();
         public readonly Action<string, IntPtr> SelectedDisplayCallback;
 
         public DisplaySelectForm(Action<string, IntPtr> callback)
@@ -35,7 +36,7 @@ namespace SharedClientForm
                 return;
             }
             windows.Add(title, h);
-            WindowTextList.Items.Add(title);
+            _ = WindowTextList.Items.Add(title);
         }
 
         private void WindowTextList_SelectedIndexChanged(object sender, EventArgs e)

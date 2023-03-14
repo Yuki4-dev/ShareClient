@@ -13,7 +13,7 @@ namespace ShareClientTest
     {
         public int RetryCount { get; set; } = 2;
         public List<int> SendDataSize { get; } = new();
-        public List<int> RecieveDataSize { get; } = new();
+        public List<int> ReceiveDataSize { get; } = new();
         public ShareClientSpec ClientSpec { get; } = new();
         public IShareClientLogger Logger => new MockShareClientLogger();
 
@@ -30,9 +30,9 @@ namespace ShareClientTest
             return true;
         }
 
-        public void SetRecieveDataSize(int size)
+        public void SetReceiveDataSize(int size)
         {
-            RecieveDataSize.Add(size);
+            ReceiveDataSize.Add(size);
         }
     }
 

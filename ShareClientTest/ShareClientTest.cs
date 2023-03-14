@@ -31,10 +31,10 @@ namespace ShareClientTest
             var Receiver = ShareAlgorithmBuilder.NewBuilder()
                                                 .SetShareAlgorithmManager(manager)
                                                 .SetSocket(socket)
-                                                .BuildRecieve(new IPEndPoint(0, 0));
+                                                .BuildReceive(new IPEndPoint(0, 0));
 
             byte[] recieveData = null;
-            var task = Receiver.RecieveAsync((data) => recieveData = data);
+            var task = Receiver.ReceiveAsync((data) => recieveData = data);
 
             while (!task.IsCompleted)
             {
@@ -42,7 +42,7 @@ namespace ShareClientTest
             }
 
             var size1 = manager.SendDataSize[0];
-            var size2 = manager.RecieveDataSize[0];
+            var size2 = manager.ReceiveDataSize[0];
             Assert.AreEqual(size1, size2);
 
             Assert.AreEqual(sendByte.Length, recieveData.Length);

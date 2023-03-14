@@ -2,7 +2,7 @@ using SharedDisplayForm;
 using System;
 using System.Windows.Forms;
 
-namespace SharedDisplay
+namespace ShareClientForm
 {
     internal static class Program
     {
@@ -12,7 +12,7 @@ namespace SharedDisplay
         [STAThread]
         private static void Main()
         {
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            _ = Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new SharedClientMainForm());

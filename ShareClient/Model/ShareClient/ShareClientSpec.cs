@@ -1,12 +1,13 @@
-﻿using System;
+﻿using ShareClient.Exceptions;
+using System;
 
 namespace ShareClient.Model.ShareClient
 {
     public class ShareClientSpec : IClientData
     {
-        public const int SIZE = ImageCleintSpecVer1.SIZE;
+        public const int SIZE = ImageClientSpecVer1.SIZE;
         public int Size => SIZE;
-        public int Version => ImageCleintSpecVer1.VERSION;
+        public int Version => ImageClientSpecVer1.VERSION;
         public int BufferSize { get; set; } = 8192;
         public int SendDelay { get; set; } = 10;
         public int SplitBufferSize { get; set; } = 10;
@@ -15,11 +16,11 @@ namespace ShareClient.Model.ShareClient
         public byte[] ToByte()
         {
             var byteData = new byte[SIZE];
-            byteData[ImageCleintSpecVer1.VersionIndex] = (byte)Version;
-            Array.Copy(BitConverter.GetBytes(BufferSize), 0, byteData, ImageCleintSpecVer1.BufferSizeIndex, ImageCleintSpecVer1.BufferSizeLength);
-            Array.Copy(BitConverter.GetBytes(SendDelay), 0, byteData, ImageCleintSpecVer1.SendDelayIndex, ImageCleintSpecVer1.SendDelayLength);
-            Array.Copy(BitConverter.GetBytes(SplitBufferSize), 0, byteData, ImageCleintSpecVer1.SplitBufferSizeIndex, ImageCleintSpecVer1.SplitBufferSizeLength);
-            byteData[ImageCleintSpecVer1.SendSameImageIndex] = SendSameData ? (byte)1 : (byte)0;
+            byteData[ImageClientSpecVer1.VersionIndex] = (byte)Version;
+            Array.Copy(BitConverter.GetBytes(BufferSize), 0, byteData, ImageClientSpecVer1.BufferSizeIndex, ImageClientSpecVer1.BufferSizeLength);
+            Array.Copy(BitConverter.GetBytes(SendDelay), 0, byteData, ImageClientSpecVer1.SendDelayIndex, ImageClientSpecVer1.SendDelayLength);
+            Array.Copy(BitConverter.GetBytes(SplitBufferSize), 0, byteData, ImageClientSpecVer1.SplitBufferSizeIndex, ImageClientSpecVer1.SplitBufferSizeLength);
+            byteData[ImageClientSpecVer1.SendSameImageIndex] = SendSameData ? (byte)1 : (byte)0;
             return byteData;
         }
 
@@ -29,22 +30,22 @@ namespace ShareClient.Model.ShareClient
             {
                 return null;
             }
-            else if (bytes[ImageCleintSpecVer1.VersionIndex] != ImageCleintSpecVer1.VERSION)
+            else if (bytes[ImageClientSpecVer1.VersionIndex] != ImageClientSpecVer1.VERSION)
             {
-                throw new VersionDifferentException(typeof(ShareClientSpec), ImageCleintSpecVer1.VERSION, bytes[ImageCleintSpecVer1.VersionIndex]);
+                throw new VersionDifferentException(typeof(ShareClientSpec), ImageClientSpecVer1.VERSION, bytes[ImageClientSpecVer1.VersionIndex]);
             }
 
             var byteSpan = bytes.AsSpan();
             return new ShareClientSpec
             {
-                BufferSize = BitConverter.ToInt32(byteSpan.Slice(ImageCleintSpecVer1.BufferSizeIndex, ImageCleintSpecVer1.BufferSizeLength)),
-                SendDelay = BitConverter.ToInt32(byteSpan.Slice(ImageCleintSpecVer1.SendDelayIndex, ImageCleintSpecVer1.SendDelayLength)),
-                SplitBufferSize = BitConverter.ToInt32(byteSpan.Slice(ImageCleintSpecVer1.SplitBufferSizeIndex, ImageCleintSpecVer1.SplitBufferSizeLength)),
-                SendSameData = byteSpan[ImageCleintSpecVer1.SendSameImageIndex] == 1,
+                BufferSize = BitConverter.ToInt32(byteSpan.Slice(ImageClientSpecVer1.BufferSizeIndex, ImageClientSpecVer1.BufferSizeLength)),
+                SendDelay = BitConverter.ToInt32(byteSpan.Slice(ImageClientSpecVer1.SendDelayIndex, ImageClientSpecVer1.SendDelayLength)),
+                SplitBufferSize = BitConverter.ToInt32(byteSpan.Slice(ImageClientSpecVer1.SplitBufferSizeIndex, ImageClientSpecVer1.SplitBufferSizeLength)),
+                SendSameData = byteSpan[ImageClientSpecVer1.SendSameImageIndex] == 1,
             };
         }
 
-        private class ImageCleintSpecVer1
+        private class ImageClientSpecVer1
         {
             public const byte SIZE = 14;
             public const byte VERSION = 1;

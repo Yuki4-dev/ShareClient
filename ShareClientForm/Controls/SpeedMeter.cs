@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 
-namespace SharedClientForm
+namespace SharedClientForm.Controls
 {
     public partial class SpeedMeter : UserControl
     {
@@ -16,7 +16,7 @@ namespace SharedClientForm
         public Parameter Parameter(string name)
         {
             var item = new ListViewItem(name);
-            item.SubItems.Add(new ListViewItem.ListViewSubItem());
+            _ = item.SubItems.Add(new ListViewItem.ListViewSubItem());
             var param = new Parameter(name, item);
             item.Tag = param;
             return param;
@@ -24,7 +24,7 @@ namespace SharedClientForm
 
         public void Add(Parameter parameter)
         {
-            listView.Items.Add(parameter.Item);
+            _ = listView.Items.Add(parameter.Item);
         }
     }
 

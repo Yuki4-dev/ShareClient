@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace ShareClient
+namespace ShareClient.Exceptions
 {
     public class ConnectionException : Exception
     {

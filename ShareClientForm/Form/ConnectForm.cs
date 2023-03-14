@@ -21,16 +21,16 @@ namespace SharedClientForm
 
             var meta = connection.MetaData.AsSpan();
             var name = meta[0..^8].ToArray();
-            textbobConnection.AppendText($" NAME：【{Encoding.UTF8.GetString(name)}】");
-            textbobConnection.AppendText(Environment.NewLine);
-            textbobConnection.AppendText($" IP：【{iPEndPoint.Address}】");
-            textbobConnection.AppendText(Environment.NewLine);
+            textboxConnection.AppendText($" NAME：【{Encoding.UTF8.GetString(name)}】");
+            textboxConnection.AppendText(Environment.NewLine);
+            textboxConnection.AppendText($" IP：【{iPEndPoint.Address}】");
+            textboxConnection.AppendText(Environment.NewLine);
             var nameLen = name.Length;
-            textbobConnection.AppendText($" FlameLate：【{BitConverter.ToInt32(meta[nameLen..^4].ToArray())}】");
-            textbobConnection.AppendText(Environment.NewLine);
+            textboxConnection.AppendText($" FlameLate：【{BitConverter.ToInt32(meta[nameLen..^4].ToArray())}】");
+            textboxConnection.AppendText(Environment.NewLine);
             nameLen += 4;
-            textbobConnection.AppendText($" WidowWidth：【{BitConverter.ToInt32(meta[nameLen..meta.Length].ToArray())}】");
-            textbobConnection.AppendText(Environment.NewLine);
+            textboxConnection.AppendText($" WidowWidth：【{BitConverter.ToInt32(meta[nameLen..meta.Length].ToArray())}】");
+            textboxConnection.AppendText(Environment.NewLine);
         }
 
         private void buttonConnect_Click(object sender, EventArgs e)

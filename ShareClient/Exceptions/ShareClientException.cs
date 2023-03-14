@@ -1,7 +1,7 @@
 ﻿using ShareClient.Model.ShareClient;
 using System;
 
-namespace ShareClient
+namespace ShareClient.Exceptions
 {
     [Serializable()]
     public class ShareClientException : Exception

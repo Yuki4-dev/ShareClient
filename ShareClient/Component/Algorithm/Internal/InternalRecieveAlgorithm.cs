@@ -1,15 +1,15 @@
-﻿using ShareClient.Component.Algorithm.Internal;
-using ShareClient.Component.Core;
+﻿using ShareClient.Component.Core;
+using ShareClient.Exceptions;
 using ShareClient.Model.ShareClient;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ShareClient.Component.Algorithm
+namespace ShareClient.Component.Algorithm.Internal
 {
-    internal class InternalRecieveAlgorithm : IRecieveAlgorithm
+    internal class InternalReceiveAlgorithm : IReceiveAlgorithm
     {
-        private readonly LinkedList<IConnectAlgorithm> _SplitBuffer = new LinkedList<IConnectAlgorithm>();
+        private readonly LinkedList<IConnectAlgorithm> _SplitBuffer = new();
         private readonly ShareClientSpec _ClientSpec;
         private readonly IShareAlgorithmManager _Manager;
         private readonly IShareClientSocket _Socket;
@@ -18,14 +18,14 @@ namespace ShareClient.Component.Algorithm
 
         public event EventHandler ShareAlgorithmClosed;
 
-        public InternalRecieveAlgorithm(ShareClientSpec clientSpec, IShareAlgorithmManager manager, IShareClientSocket socket)
+        public InternalReceiveAlgorithm(ShareClientSpec clientSpec, IShareAlgorithmManager manager, IShareClientSocket socket)
         {
             _ClientSpec = clientSpec;
             _Manager = manager;
             _Socket = socket;
         }
 
-        public async Task RecieveAsync(Action<byte[]> reciever)
+        public async Task ReceiveAsync(Action<byte[]> receiver)
         {
             CheckIfClosed();
 
@@ -34,14 +34,14 @@ namespace ShareClient.Component.Algorithm
             {
                 try
                 {
-                    await ReceiveData(reciever);
+                    await ReceiveData(receiver);
                 }
                 catch (Exception ex)
                 {
-                    _Manager.Logger.Error($"Sokect Receive Throw Exception, Socket IsOpen : {_Socket.IsOpen}", ex);
+                    _Manager.Logger.Error($"Socket Receive Throw Exception, Socket IsOpen : {_Socket.IsOpen}", ex);
                     if (_Socket.IsOpen)
                     {
-                        _Manager.Logger.Error($"Exception Throw Count : {count + 1 }, RetryCount: {_Manager.RetryCount}", ex);
+                        _Manager.Logger.Error($"Exception Throw Count : {count + 1}, RetryCount: {_Manager.RetryCount}", ex);
                         if (++count > _Manager.RetryCount || _Manager.HandleException(ex))
                         {
 
@@ -54,7 +54,7 @@ namespace ShareClient.Component.Algorithm
             }
         }
 
-        private async Task ReceiveData(Action<byte[]> reciever)
+        private async Task ReceiveData(Action<byte[]> receiver)
         {
             var ReceiveData = await _Socket.ReceiveAsync();
             if (ReceiveData != null && ReceiveData.Length > 0)
@@ -62,13 +62,13 @@ namespace ShareClient.Component.Algorithm
                 var clientData = ShareClientData.FromBytes(ReceiveData);
                 if (clientData != null)
                 {
-                    _Manager.SetRecieveDataSize(clientData.Size);
-                    AnalyzeReceiveData(clientData, reciever);
+                    _Manager.SetReceiveDataSize(clientData.Size);
+                    AnalyzeReceiveData(clientData, receiver);
                 }
             }
         }
 
-        private void AnalyzeReceiveData(ShareClientData receiveData, Action<byte[]> reciever)
+        private void AnalyzeReceiveData(ShareClientData receiveData, Action<byte[]> receiver)
         {
             if (receiveData.Header.DataType == SendDataType.Close)
             {
@@ -77,8 +77,8 @@ namespace ShareClient.Component.Algorithm
             }
             else if (receiveData.Header.DataType == SendDataType.System)
             {
-                _Manager.Logger.Info("Recive System Data.");
-                RecieveSystemData(receiveData);
+                _Manager.Logger.Info("Receive System Data.");
+                ReceiveSystemData(receiveData);
             }
             else
             {
@@ -86,11 +86,11 @@ namespace ShareClient.Component.Algorithm
                 {
                     if (receiveData.Header.SplitCount == 1)
                     {
-                        reciever.Invoke(receiveData.DataPart);
+                        receiver.Invoke(receiveData.DataPart);
                     }
                     else
                     {
-                        ConnectReceiveData(receiveData, reciever);
+                        ConnectReceiveData(receiveData, receiver);
                     }
                 }
                 catch (Exception ex)
@@ -102,12 +102,12 @@ namespace ShareClient.Component.Algorithm
             }
         }
 
-        protected virtual void RecieveSystemData(ShareClientData receiveData)
+        protected virtual void ReceiveSystemData(ShareClientData receiveData)
         {
             //
         }
 
-        private void ConnectReceiveData(ShareClientData receiveData, Action<byte[]> reciever)
+        private void ConnectReceiveData(ShareClientData receiveData, Action<byte[]> receiver)
         {
             for (var node = _SplitBuffer.First; node != null; node = node.Next)
             {
@@ -116,14 +116,14 @@ namespace ShareClient.Component.Algorithm
                 {
                     if (connect.IsComplete)
                     {
-                        reciever.Invoke(connect.GetConnectData());
+                        receiver.Invoke(connect.GetConnectData());
                         _SplitBuffer.Remove(node);
                     }
                     return;
                 }
             }
 
-            _SplitBuffer.AddLast(InternalConnectAlgorithm.Create(receiveData));
+            _ = _SplitBuffer.AddLast(InternalConnectAlgorithm.Create(receiveData));
             if (_SplitBuffer.Count > _ClientSpec.SplitBufferSize)
             {
                 _SplitBuffer.RemoveFirst();
@@ -163,7 +163,7 @@ namespace ShareClient.Component.Algorithm
         {
             if (IsClosed || !_Socket.IsOpen)
             {
-                throw new ShareClientException(null, "Recieve Algolithm is Closed.", null);
+                throw new ShareClientException(null, "Receive Algorithm is Closed.", null);
             }
         }
     }

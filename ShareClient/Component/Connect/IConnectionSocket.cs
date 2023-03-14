@@ -7,18 +7,18 @@ namespace ShareClient.Component.Connect
     {
         IPEndPoint LocalEndPoint { get; }
         void Send(IPEndPoint remoteEndPoint, byte[] sendData);
-        ConnectionSocketRecieveData Recieve();
+        ConnectionSocketReceiveData Receive();
     }
 
-    public class ConnectionSocketRecieveData
+    public class ConnectionSocketReceiveData
     {
-        public IPEndPoint ReciveEndPoint { get; }
-        public byte[] RecieveBytes { get; }
+        public IPEndPoint ReceiveEndPoint { get; }
+        public byte[] ReceiveBytes { get; }
 
-        public ConnectionSocketRecieveData(IPEndPoint recuveEndPoint, byte[] recieveBytes)
+        public ConnectionSocketReceiveData(IPEndPoint receiveEndPoint, byte[] receiveBytes)
         {
-            ReciveEndPoint = recuveEndPoint;
-            RecieveBytes = recieveBytes;
+            ReceiveEndPoint = receiveEndPoint;
+            ReceiveBytes = receiveBytes;
         }
     }
 }

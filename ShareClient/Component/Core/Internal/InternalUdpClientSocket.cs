@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using SocketException = ShareClient.Exceptions.SocketException;
 
 namespace ShareClient.Component.Core.Internal
 {
@@ -67,22 +68,15 @@ namespace ShareClient.Component.Core.Internal
             try
             {
                 IPEndPoint receiveEp = null;
-                var recieveData = _UdpClient.Receive(ref receiveEp);
+                var receiveData = _UdpClient.Receive(ref receiveEp);
                 if (_Remote == null || _Remote.Equals(receiveEp))
                 {
-                    return recieveData;
+                    return receiveData;
                 }
             }
             catch (Exception ex)
             {
-                if (ex is ObjectDisposedException)
-                {
-                    IsOpen = false;
-                }
-                else
-                {
-                    throw new SocketException(IsOpen, "Receive Failure : " + ex.Message, ex);
-                }
+                IsOpen = ex is ObjectDisposedException ? false : throw new SocketException(IsOpen, "Receive Failure : " + ex.Message, ex);
             }
 
             return null;
@@ -94,18 +88,11 @@ namespace ShareClient.Component.Core.Internal
 
             try
             {
-                _UdpClient.Send(sendData, sendData.Length);
+                _ = _UdpClient.Send(sendData, sendData.Length);
             }
             catch (Exception ex)
             {
-                if (ex is ObjectDisposedException)
-                {
-                    IsOpen = false;
-                }
-                else
-                {
-                    throw new SocketException(IsOpen, "Send Failure : " + ex.Message, ex);
-                }
+                IsOpen = ex is ObjectDisposedException ? false : throw new SocketException(IsOpen, "Send Failure : " + ex.Message, ex);
             }
         }
 

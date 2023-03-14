@@ -60,27 +60,21 @@ namespace ShareClient.Component.Algorithm
             CheckSend();
 
             IShareClientSocket socket = _Socket;
-            if (socket == null)
-            {
-                socket = CreateUdpSocket();
-            }
+            socket ??= CreateUdpSocket();
 
             return new InternalSendAlgorithm(ClientSpec, ShareAlgorithmManager, socket);
         }
 
-        public IRecieveAlgorithm BuildRecieve(IPEndPoint localEndPoint)
+        public IReceiveAlgorithm BuildReceive(IPEndPoint localEndPoint)
         {
             _LocalEndPoint = localEndPoint;
 
-            CheckRecieve();
+            CheckReceive();
 
             IShareClientSocket socket = _Socket;
-            if (socket == null)
-            {
-                socket = CreateUdpSocket();
-            }
+            socket ??= CreateUdpSocket();
 
-            return new InternalRecieveAlgorithm(ClientSpec, ShareAlgorithmManager, socket);
+            return new InternalReceiveAlgorithm(ClientSpec, ShareAlgorithmManager, socket);
         }
 
         private void CheckSend()
@@ -91,7 +85,7 @@ namespace ShareClient.Component.Algorithm
             }
         }
 
-        private void CheckRecieve()
+        private void CheckReceive()
         {
             if (_LocalEndPoint == null)
             {
@@ -101,16 +95,7 @@ namespace ShareClient.Component.Algorithm
 
         private IShareClientSocket CreateUdpSocket()
         {
-            InternalUdpClientSocket socket;
-            if (_LocalEndPoint == null)
-            {
-                socket = new InternalUdpClientSocket();
-            }
-            else
-            {
-                socket = new InternalUdpClientSocket(_LocalEndPoint);
-            }
-
+            InternalUdpClientSocket socket = _LocalEndPoint == null ? new InternalUdpClientSocket() : new InternalUdpClientSocket(_LocalEndPoint);
             if (_ConnectEndPoint != null)
             {
                 socket.Connect(_ConnectEndPoint);

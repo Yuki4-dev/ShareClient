@@ -1,4 +1,6 @@
-﻿using SharedClientForm;
+﻿using ShareClientForm.Controls;
+using SharedClientForm;
+using SharedClientForm.Controls;
 using System.Drawing;
 
 namespace SharedDisplayForm
@@ -32,42 +34,42 @@ namespace SharedDisplayForm
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SharedClientMainForm));
-            this.ClientRudioBtn = new System.Windows.Forms.RadioButton();
-            this.ServerRudioBtn = new System.Windows.Forms.RadioButton();
-            this.PictureArea = new SharedClientForm.PictureArea();
+            this.ClientRadioBtn = new System.Windows.Forms.RadioButton();
+            this.ServerRadioBtn = new System.Windows.Forms.RadioButton();
+            this.PictureArea = new PictureArea();
             this.ClientHostTextBox = new System.Windows.Forms.TextBox();
             this.ClientPortTextBox = new System.Windows.Forms.TextBox();
             this.ServerPortTextBox = new System.Windows.Forms.TextBox();
             this.StartBtn = new System.Windows.Forms.Button();
             this.StopBtn = new System.Windows.Forms.Button();
-            this.SpeedBtn = new SharedClientForm.DropButton();
-            this.SpeedMeter = new SharedClientForm.SpeedMeter();
-            this.SettingBtn = new SharedClientForm.DropButton();
+            this.SpeedBtn = new DropButton();
+            this.SpeedMeter = new SpeedMeter();
+            this.SettingBtn = new DropButton();
             this.SuspendLayout();
             // 
-            // ClientRudioBtn
+            // ClientRadioBtn
             // 
-            this.ClientRudioBtn.AutoSize = true;
-            this.ClientRudioBtn.Location = new System.Drawing.Point(13, 23);
-            this.ClientRudioBtn.Name = "ClientRudioBtn";
-            this.ClientRudioBtn.Size = new System.Drawing.Size(74, 17);
-            this.ClientRudioBtn.TabIndex = 0;
-            this.ClientRudioBtn.Text = "クライアント";
-            this.ClientRudioBtn.UseVisualStyleBackColor = true;
-            this.ClientRudioBtn.CheckedChanged += new System.EventHandler(this.RudioBtn_CheckedChanged);
+            this.ClientRadioBtn.AutoSize = true;
+            this.ClientRadioBtn.Location = new System.Drawing.Point(13, 23);
+            this.ClientRadioBtn.Name = "ClientRadioBtn";
+            this.ClientRadioBtn.Size = new System.Drawing.Size(74, 17);
+            this.ClientRadioBtn.TabIndex = 0;
+            this.ClientRadioBtn.Text = "クライアント";
+            this.ClientRadioBtn.UseVisualStyleBackColor = true;
+            this.ClientRadioBtn.CheckedChanged += new System.EventHandler(this.RudioBtn_CheckedChanged);
             // 
-            // ServerRudioBtn
+            // ServerRadioBtn
             // 
-            this.ServerRudioBtn.AutoSize = true;
-            this.ServerRudioBtn.Checked = true;
-            this.ServerRudioBtn.Location = new System.Drawing.Point(13, 71);
-            this.ServerRudioBtn.Name = "ServerRudioBtn";
-            this.ServerRudioBtn.Size = new System.Drawing.Size(57, 17);
-            this.ServerRudioBtn.TabIndex = 1;
-            this.ServerRudioBtn.TabStop = true;
-            this.ServerRudioBtn.Text = "サーバー";
-            this.ServerRudioBtn.UseVisualStyleBackColor = true;
-            this.ServerRudioBtn.CheckedChanged += new System.EventHandler(this.RudioBtn_CheckedChanged);
+            this.ServerRadioBtn.AutoSize = true;
+            this.ServerRadioBtn.Checked = true;
+            this.ServerRadioBtn.Location = new System.Drawing.Point(13, 71);
+            this.ServerRadioBtn.Name = "ServerRadioBtn";
+            this.ServerRadioBtn.Size = new System.Drawing.Size(57, 17);
+            this.ServerRadioBtn.TabIndex = 1;
+            this.ServerRadioBtn.TabStop = true;
+            this.ServerRadioBtn.Text = "サーバー";
+            this.ServerRadioBtn.UseVisualStyleBackColor = true;
+            this.ServerRadioBtn.CheckedChanged += new System.EventHandler(this.RudioBtn_CheckedChanged);
             // 
             // PictureArea
             // 
@@ -177,8 +179,8 @@ namespace SharedDisplayForm
             this.Controls.Add(this.ClientPortTextBox);
             this.Controls.Add(this.ClientHostTextBox);
             this.Controls.Add(this.PictureArea);
-            this.Controls.Add(this.ServerRudioBtn);
-            this.Controls.Add(this.ClientRudioBtn);
+            this.Controls.Add(this.ServerRadioBtn);
+            this.Controls.Add(this.ClientRadioBtn);
             this.Font = new System.Drawing.Font("Yu Gothic UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Name = "SharedClientMainForm";
             this.Text = "SharedDisplay";
@@ -191,8 +193,8 @@ namespace SharedDisplayForm
 
         #endregion
 
-        private System.Windows.Forms.RadioButton ClientRudioBtn;
-        private System.Windows.Forms.RadioButton ServerRudioBtn;
+        private System.Windows.Forms.RadioButton ClientRadioBtn;
+        private System.Windows.Forms.RadioButton ServerRadioBtn;
         private System.Windows.Forms.TextBox ClientPortTextBox;
         private System.Windows.Forms.TextBox ServerPortTextBox;
         private System.Windows.Forms.Button StartBtn;

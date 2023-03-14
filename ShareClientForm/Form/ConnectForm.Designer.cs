@@ -30,29 +30,29 @@ namespace SharedClientForm
         /// </summary>
         private void InitializeComponent()
         {
-            this.textbobConnection = new System.Windows.Forms.TextBox();
+            this.textboxConnection = new System.Windows.Forms.TextBox();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonConnect = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBox1
             // 
-            this.textbobConnection.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.textboxConnection.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textbobConnection.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textbobConnection.Location = new System.Drawing.Point(8, 5);
-            this.textbobConnection.BackColor = Color.White;
-            this.textbobConnection.Multiline = true;
-            this.textbobConnection.Name = "textBox1";
-            this.textbobConnection.ReadOnly = true;
-            this.textbobConnection.Size = new System.Drawing.Size(314, 99);
-            this.textbobConnection.TabIndex = 0;
+            this.textboxConnection.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textboxConnection.Location = new System.Drawing.Point(8, 5);
+            this.textboxConnection.BackColor = Color.White;
+            this.textboxConnection.Multiline = true;
+            this.textboxConnection.Name = "textBox1";
+            this.textboxConnection.ReadOnly = true;
+            this.textboxConnection.Size = new System.Drawing.Size(314, 99);
+            this.textboxConnection.TabIndex = 0;
             // 
-            // buttoonCancel
+            // buttonCancel
             // 
             this.buttonCancel.Location = new System.Drawing.Point(233, 119);
-            this.buttonCancel.Name = "buttoonCancel";
+            this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(85, 25);
             this.buttonCancel.TabIndex = 1;
             this.buttonCancel.Text = "Cancel";
@@ -82,7 +82,7 @@ namespace SharedClientForm
             this.ClientSize = new System.Drawing.Size(328, 151);
             this.Controls.Add(this.buttonConnect);
             this.Controls.Add(this.buttonCancel);
-            this.Controls.Add(this.textbobConnection);
+            this.Controls.Add(this.textboxConnection);
             this.Name = "ConnectForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Request Connect";
@@ -93,7 +93,7 @@ namespace SharedClientForm
 
         #endregion
 
-        private System.Windows.Forms.TextBox textbobConnection;
+        private System.Windows.Forms.TextBox textboxConnection;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonConnect;
     }

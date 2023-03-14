@@ -5,12 +5,12 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Timers;
 
-namespace SharedClientForm.Component
+namespace ShareClientForm.Componet
 {
     public class DisplayImageSendAlgorithm : IDisposable
     {
-        private readonly Timer _SenderTimer = new Timer();
-        private readonly DisplayImageCaputure _Caputure;
+        private readonly Timer _SenderTimer = new();
+        private readonly DisplayImageCapture _Capture;
         private readonly ISendAlgorithm _Sender;
         private readonly ImageFormat _Format;
         private readonly Action _Closing;
@@ -19,7 +19,7 @@ namespace SharedClientForm.Component
 
         public DisplayImageSendAlgorithm(Connection connection,
                                          IShareAlgorithmManager manager,
-                                         DisplayImageCaputure caputure,
+                                         DisplayImageCapture capture,
                                          int interval,
                                          ImageFormat format,
                                          Action closed)
@@ -31,7 +31,7 @@ namespace SharedClientForm.Component
                                            .BuildSend(connection.RemoteEndPoint);
             _Sender.ShareAlgorithmClosed += Sender_ShareAlgorithmClosed;
 
-            _Caputure = caputure;
+            _Capture = capture;
             _Format = format;
             _Closing = closed;
 
@@ -50,7 +50,7 @@ namespace SharedClientForm.Component
 
         private void Send(object sender, EventArgs e)
         {
-            if (_Caputure.TryGetWindowImage(out var sendImage))
+            if (_Capture.TryGetWindowImage(out var sendImage))
             {
                 _SenderTimer.Stop();
                 using var ms = new MemoryStream();

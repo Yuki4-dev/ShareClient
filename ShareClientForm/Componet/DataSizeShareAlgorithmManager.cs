@@ -7,13 +7,13 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 
-namespace ShareClient.Component
+namespace ShareClientForm.Componet
 {
     public class DataSizeShareAlgorithmManager : IShareAlgorithmManager
     {
-        private readonly SemaphoreSlim _Semaphore = new SemaphoreSlim(1);
-        private readonly List<int> _SendDataSize = new List<int>();
-        private readonly List<int> _RecieveDataSize = new List<int>();
+        private readonly SemaphoreSlim _Semaphore = new(1);
+        private readonly List<int> _SendDataSize = new();
+        private readonly List<int> _ReceiveDataSize = new();
 
         public int RetryCount { get; set; } = 2;
         public int DataSizeCapacity { get; set; } = 1000;
@@ -32,19 +32,19 @@ namespace ShareClient.Component
             {
                 _Semaphore.Wait();
                 _SendDataSize.Add(size);
-                _Semaphore.Release();
+                _ = _Semaphore.Release();
             }
 
             return true;
         }
 
-        public virtual void SetRecieveDataSize(int size)
+        public virtual void SetReceiveDataSize(int size)
         {
-            if (_RecieveDataSize.Count <= DataSizeCapacity)
+            if (_ReceiveDataSize.Count <= DataSizeCapacity)
             {
                 _Semaphore.Wait();
-                _RecieveDataSize.Add(size);
-                _Semaphore.Release();
+                _ReceiveDataSize.Add(size);
+                _ = _Semaphore.Release();
             }
         }
 
@@ -55,20 +55,20 @@ namespace ShareClient.Component
             {
                 _Semaphore.Wait();
                 size = _SendDataSize.Sum();
-                _Semaphore.Release();
+                _ = _Semaphore.Release();
             }
 
             return size;
         }
 
-        public int GetRecieveDataSize()
+        public int GetReceiveDataSize()
         {
             int size = 0;
-            if (_RecieveDataSize.Count != 0)
+            if (_ReceiveDataSize.Count != 0)
             {
                 _Semaphore.Wait();
-                size = _RecieveDataSize.Sum();
-                _Semaphore.Release();
+                size = _ReceiveDataSize.Sum();
+                _ = _Semaphore.Release();
             }
 
             return size;
@@ -80,17 +80,17 @@ namespace ShareClient.Component
             {
                 _Semaphore.Wait();
                 _SendDataSize.Clear();
-                _Semaphore.Release();
+                _ = _Semaphore.Release();
             }
         }
 
-        public void RecieveDataSizeClear()
+        public void ReceiveDataSizeClear()
         {
-            if (_RecieveDataSize.Count != 0)
+            if (_ReceiveDataSize.Count != 0)
             {
                 _Semaphore.Wait();
-                _RecieveDataSize.Clear();
-                _Semaphore.Release();
+                _ReceiveDataSize.Clear();
+                _ = _Semaphore.Release();
             }
         }
 

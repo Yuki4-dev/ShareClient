@@ -1,5 +1,6 @@
 ﻿using ShareClient.Component.Algorithm.Internal;
 using ShareClient.Component.Connect.Internal;
+using ShareClient.Exceptions;
 using ShareClient.Model;
 using ShareClient.Model.Connect;
 using ShareClient.Model.ShareClient;
@@ -16,9 +17,9 @@ namespace ShareClient.Component.Connect
         public IPEndPoint LocalEndPoint { get; }
         public IPEndPoint RemoteEndPoint { get; }
 
-        internal Connection(ShareClientSpec cleintSpec, IPEndPoint localEndPoint, IPEndPoint remoteEndPoint)
+        internal Connection(ShareClientSpec clientSpec, IPEndPoint localEndPoint, IPEndPoint remoteEndPoint)
         {
-            ClientSpec = cleintSpec;
+            ClientSpec = clientSpec;
             LocalEndPoint = localEndPoint;
             RemoteEndPoint = remoteEndPoint;
         }
@@ -114,8 +115,8 @@ namespace ShareClient.Component.Connect
                 var sendData = new ShareClientData(ShareClientHeader.CreateSystem((uint)connectionData.Size), connectionData.ToByte());
                 Send(socket, connectEndPoint, sendData);
 
-                var recieveData = Recive(socket);
-                var responseData = ShareClientData.FromBytes(recieveData.RecieveBytes);
+                var receiveData = Receive(socket);
+                var responseData = ShareClientData.FromBytes(receiveData.ReceiveBytes);
                 if (responseData == null)
                 {
                     _Logger.Info($"ShareClientData Convert Fail.");
@@ -141,16 +142,16 @@ namespace ShareClient.Component.Connect
                     return null;
                 }
 
-                _Logger.Info($"Succes Connect. -> {connectEndPoint}");
+                _Logger.Info($"Success Connect. -> {connectEndPoint}");
 
-                return new Connection(connectionResponse.ConnectionData.CleintSpec, socket.LocalEndPoint, connectEndPoint);
+                return new Connection(connectionResponse.ConnectionData.ClientSpec, socket.LocalEndPoint, connectEndPoint);
             }
 
             public Connection Accept(IPEndPoint localEndPont)
             {
                 _LocalEndPoint = localEndPont;
 
-                CheckRecieve();
+                CheckReceive();
                 IConnectionSocket socket = Socket();
 
                 var tokenSource = new CancellationTokenSource();
@@ -183,27 +184,27 @@ namespace ShareClient.Component.Connect
 
             private Connection AcceptInternal(IConnectionSocket socket)
             {
-                var recieveData = Recive(socket);
-                var recieveConnectionData = ShareClientData.FromBytes(recieveData.RecieveBytes);
-                if (recieveConnectionData == null)
+                var receiveData = Receive(socket);
+                var receiveConnectionData = ShareClientData.FromBytes(receiveData.ReceiveBytes);
+                if (receiveConnectionData == null)
                 {
                     _Logger.Info($"ShareClientData Convert Fail.");
                     return null;
                 }
-                else if (recieveConnectionData.Header.DataType != SendDataType.System)
+                else if (receiveConnectionData.Header.DataType != SendDataType.System)
                 {
-                    _Logger.Info($"ShareClientData Type {recieveConnectionData?.Header.DataType}.");
+                    _Logger.Info($"ShareClientData Type {receiveConnectionData?.Header.DataType}.");
                     return null;
                 }
 
-                var connectionData = ConnectionData.FromByte(recieveConnectionData.DataPart);
+                var connectionData = ConnectionData.FromByte(receiveConnectionData.DataPart);
                 if (connectionData == null)
                 {
                     _Logger.Info($"ConnectionData Convert Fail.");
                     return null;
                 }
 
-                var remoteEndPoint = recieveData.ReciveEndPoint;
+                var remoteEndPoint = receiveData.ReceiveEndPoint;
                 var connectionResponse = _AcceptRequest.Invoke(remoteEndPoint, connectionData);
                 _Logger.Info($"AcceptRequest is {connectionResponse.IsConnect}.");
 
@@ -213,8 +214,8 @@ namespace ShareClient.Component.Connect
                 Connection connection = null;
                 if (connectionResponse.IsConnect)
                 {
-                    _Logger.Info($"Accept Succes.");
-                    connection = new Connection(connectionResponse.ConnectionData.CleintSpec, socket.LocalEndPoint, remoteEndPoint);
+                    _Logger.Info($"Accept Success.");
+                    connection = new Connection(connectionResponse.ConnectionData.ClientSpec, socket.LocalEndPoint, remoteEndPoint);
                 }
                 return connection;
             }
@@ -229,14 +230,7 @@ namespace ShareClient.Component.Connect
                 IConnectionSocket socket = null;
                 try
                 {
-                    if (_LocalEndPoint == null)
-                    {
-                        socket = new InternalConnectionSocket();
-                    }
-                    else
-                    {
-                        socket = new InternalConnectionSocket(_LocalEndPoint);
-                    }
+                    socket = _LocalEndPoint == null ? new InternalConnectionSocket() : (IConnectionSocket)new InternalConnectionSocket(_LocalEndPoint);
                 }
                 catch (Exception ex)
                 {
@@ -251,7 +245,7 @@ namespace ShareClient.Component.Connect
                 //
             }
 
-            private void CheckRecieve()
+            private void CheckReceive()
             {
                 if (_LocalEndPoint == null)
                 {
@@ -261,7 +255,7 @@ namespace ShareClient.Component.Connect
 
             private void RunCancellation(IConnectionSocket socket, CancellationToken token)
             {
-                Task.Run(() =>
+                _ = Task.Run(() =>
                 {
                     while (!token.IsCancellationRequested)
                     {
@@ -274,7 +268,7 @@ namespace ShareClient.Component.Connect
                         }
                         Thread.Sleep(1);
                         Thread.Sleep(0);
-                        Thread.Yield();
+                        _ = Thread.Yield();
                     }
                 });
             }
@@ -293,20 +287,20 @@ namespace ShareClient.Component.Connect
                 _Logger.Send(remoteEndPoint, shareClientData.ToByte());
             }
 
-            private ConnectionSocketRecieveData Recive(IConnectionSocket socket)
+            private ConnectionSocketReceiveData Receive(IConnectionSocket socket)
             {
-                ConnectionSocketRecieveData recieveData = null;
+                ConnectionSocketReceiveData receiveData = null;
                 try
                 {
-                    recieveData = socket.Recieve();
-                    _Logger.Receive(recieveData.ReciveEndPoint, recieveData.RecieveBytes);
+                    receiveData = socket.Receive();
+                    _Logger.Receive(receiveData.ReceiveEndPoint, receiveData.ReceiveBytes);
                 }
                 catch (Exception ex)
                 {
-                    Throw(_LocalEndPoint, $"Fail Recive. {ex.Message}", ex);
+                    Throw(_LocalEndPoint, $"Fail Receive. {ex.Message}", ex);
                 }
 
-                return recieveData;
+                return receiveData;
             }
 
             private void Throw(IPEndPoint endPoint, string message, Exception inner = null)

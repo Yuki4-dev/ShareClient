@@ -34,12 +34,7 @@ namespace ShareClient.Model.ShareClient
             }
 
             var dataPart = bytes.AsSpan(header.Size).ToArray();
-            if (header.DataPartSize != dataPart.Length)
-            {
-                return null;
-            }
-
-            return new ShareClientData(header, dataPart);
+            return header.DataPartSize != dataPart.Length ? null : new ShareClientData(header, dataPart);
         }
     }
 }

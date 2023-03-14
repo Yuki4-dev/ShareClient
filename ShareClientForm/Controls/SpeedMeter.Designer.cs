@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace SharedClientForm
+namespace SharedClientForm.Controls
 {
     partial class SpeedMeter
     {
@@ -32,7 +32,7 @@ namespace SharedClientForm
         {
             this.listView = new System.Windows.Forms.ListView();
             this.Type = new System.Windows.Forms.ColumnHeader();
-            this.Spped = new System.Windows.Forms.ColumnHeader();
+            this.Speed = new System.Windows.Forms.ColumnHeader();
             this.SuspendLayout();
             // 
             // listView1
@@ -40,7 +40,7 @@ namespace SharedClientForm
             this.listView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Type,
-            this.Spped});
+            this.Speed});
             this.listView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView.HideSelection = false;
             this.listView.Location = new System.Drawing.Point(0, 0);
@@ -55,10 +55,10 @@ namespace SharedClientForm
             this.Type.Text = "Type";
             this.Type.Width = 100;
             // 
-            // Spped
+            // Speed
             // 
-            this.Spped.Text = "Spped";
-            this.Spped.Width = 150;
+            this.Speed.Text = "Speed";
+            this.Speed.Width = 150;
             // 
             // SpeedMeter
             // 
@@ -75,6 +75,6 @@ namespace SharedClientForm
 
         private System.Windows.Forms.ListView listView;
         private System.Windows.Forms.ColumnHeader Type;
-        private System.Windows.Forms.ColumnHeader Spped;
+        private System.Windows.Forms.ColumnHeader Speed;
     }
 }

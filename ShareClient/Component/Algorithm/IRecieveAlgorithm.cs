@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace ShareClient.Component.Algorithm
 {
-    public interface IRecieveAlgorithm : IShareAlgorithm
+    public interface IReceiveAlgorithm : IShareAlgorithm
     {
-        Task RecieveAsync(Action<byte[]> reciever);
+        Task ReceiveAsync(Action<byte[]> receiver);
     }
 }

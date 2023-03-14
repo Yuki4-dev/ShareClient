@@ -1,8 +1,6 @@
-﻿using ShareClient.Component;
-using ShareClient.Component.Connect;
+﻿using ShareClient.Component.Connect;
 using ShareClient.Model.Connect;
-using SharedClientForm;
-using SharedClientForm.Component;
+using ShareClientForm.Controls;
 using System;
 using System.Drawing.Imaging;
 using System.Net;
@@ -14,10 +12,10 @@ namespace ShareClientForm.Componet
     {
         private bool isCancelAccept = false;
         private bool isCancelConnect = false;
-        private DisplayImageReciveAlgorithm _Receiver;
+        private DisplayImageReceiveAlgorithm _Receiver;
         private DisplayImageSendAlgorithm _Sender;
 
-        public DataSizeShareAlgorithmManager ReciveManager { get; } = new DataSizeShareAlgorithmManager();
+        public DataSizeShareAlgorithmManager ReceiveManager { get; } = new DataSizeShareAlgorithmManager();
         public DataSizeShareAlgorithmManager SendManager { get; } = new DataSizeShareAlgorithmManager();
 
         public async Task<Connection> ConnectAsync(IPEndPoint connectEndPoint, ConnectionData connectionData)
@@ -39,8 +37,8 @@ namespace ShareClientForm.Componet
         }
 
         public void Send(Connection connection,
-                         DisplayImageCaputure caputure,
-                         int faleLate,
+                         DisplayImageCapture capture,
+                         int frameLate,
                          ImageFormat format,
                          Action closing)
         {
@@ -49,21 +47,21 @@ namespace ShareClientForm.Componet
                 throw new InvalidOperationException("Send Already Run.");
             }
 
-            _Sender = new DisplayImageSendAlgorithm(connection, SendManager, caputure, faleLate, format, closing);
+            _Sender = new DisplayImageSendAlgorithm(connection, SendManager, capture, frameLate, format, closing);
             _Sender.Start();
         }
 
-        public void Recieve(Connection connection,
+        public void Receive(Connection connection,
                                       int flameLate,
-                                      IPictureArea pictureareArea,
+                                      IPictureArea pictureArea,
                                       Action closing)
         {
             if (_Receiver != null && !_Receiver.IsDisposed)
             {
-                throw new InvalidOperationException("Recieve Already Run.");
+                throw new InvalidOperationException("Receive Already Run.");
             }
 
-            _Receiver = new DisplayImageReciveAlgorithm(connection, ReciveManager, flameLate, pictureareArea, closing);
+            _Receiver = new DisplayImageReceiveAlgorithm(connection, ReceiveManager, flameLate, pictureArea, closing);
             _Receiver.Start();
         }
 

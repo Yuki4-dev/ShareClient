@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace SharedClientForm
+namespace ShareClientForm.Controls
 {
     public interface IPictureArea
     {
@@ -9,9 +9,9 @@ namespace SharedClientForm
         public void PaintPicture(Image img);
     }
 
-    public class PictureArea : Control, IPictureArea
+    public class PictureArea : System.Windows.Forms.Control, IPictureArea
     {
-        protected readonly PictureBox _MainPicture = new PictureBox();
+        protected readonly PictureBox _MainPicture = new();
 
         public Image DefaultPicture { get; set; }
 
@@ -40,7 +40,7 @@ namespace SharedClientForm
         {
             if (_MainPicture.InvokeRequired)
             {
-                _MainPicture.Invoke(new DelegateSetImage(() => SetImage(img)));
+                _ = _MainPicture.Invoke(new DelegateSetImage(() => SetImage(img)));
                 return;
             }
             var oldImage = _MainPicture.Image;

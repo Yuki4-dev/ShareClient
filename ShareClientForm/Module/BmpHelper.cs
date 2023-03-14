@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace SharedClientForm
+namespace ShareClientForm.Module
 {
     public class BmpHelper
     {
@@ -26,7 +26,7 @@ namespace SharedClientForm
             windowBmp = new Bitmap(width, height);
             using var g = Graphics.FromImage(windowBmp);
             var dc = g.GetHdc();
-            NativeMethod.PrintWindow(hWnd, dc, 0);
+            _ = NativeMethod.PrintWindow(hWnd, dc, 0);
             g.ReleaseHdc(dc);
 
             return true;
